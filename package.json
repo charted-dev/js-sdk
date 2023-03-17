@@ -3,7 +3,7 @@
   "description": "🐻‍❄️📦 Root project for @ncharts/sdk",
   "private": true,
   "version": "0.0.0-dev.0",
-  "packageManager": "yarn@3.3.1",
+  "packageManager": "yarn@3.5.0",
   "scripts": {
     "generate:types": "yarn fmt && yarn lint && tsx --tsconfig ./scripts/tsconfig.json scripts/generate-types.ts",
     "build": "yarn fmt && yarn lint && rimraf dist && tsx --tsconfig ./scripts/tsconfig.json scripts/build.ts",
