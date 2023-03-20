@@ -160,7 +160,7 @@ __metadata:
     log-symbols: 5.1.0
     prettier: 2.8.3
     signale: 1.4.0
-    testcontainers: 9.1.1
+    testcontainers: 9.3.0
     tsx: 3.12.2
     typescript: 4.9.4
   languageName: unknown
@@ -220,12 +220,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/archiver@npm:^5.3.1":
-  version: 5.3.1
-  resolution: "@types/archiver@npm:5.3.1"
+"@types/archiver@npm:^5.3.2":
+  version: 5.3.2
+  resolution: "@types/archiver@npm:5.3.2"
   dependencies:
-    "@types/glob": "*"
-  checksum: 1c6babc7f50acf5bf7fa3d5fa76bb68702e4463e6a412d259cdddff611dbbb9832ea4b2f41d675fd95ac1aa8b087daa882423073e41db9e296f14d41f2ea88e6
+    "@types/readdir-glob": "*"
+  checksum: 9db5b4fdc1740fa07d08340ed827598cc6eda97406ac18a06a158670c7124d4120650a3b9cd660e9e39b42f033cf8f052566da32681e8ad91163473df88a3c4c
   languageName: node
   linkType: hard
 
@@ -239,13 +239,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/dockerode@npm:^3.3.12":
-  version: 3.3.14
-  resolution: "@types/dockerode@npm:3.3.14"
+"@types/dockerode@npm:^3.3.15":
+  version: 3.3.15
+  resolution: "@types/dockerode@npm:3.3.15"
   dependencies:
     "@types/docker-modem": "*"
     "@types/node": "*"
-  checksum: 6a8472622861fb0c97908963a8236d6e439c9feefc845b866326272ad0e5c33f537206fb4633424c5e3c8ec63559cb14bc737e2f88f0fcdf11496a9162d5b139
+  checksum: b8fa13f86c761175a5813eb41fbd1e46d0646f008e5c84738b51c1aa82ce4f3758502efe8c3c583463e7cb7dc77e2faadfff91f4e6274e844e68a0ebf9deeae5
   languageName: node
   linkType: hard
 
@@ -266,27 +266,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/glob@npm:*":
-  version: 8.0.0
-  resolution: "@types/glob@npm:8.0.0"
-  dependencies:
-    "@types/minimatch": "*"
-    "@types/node": "*"
-  checksum: 1817b05f5a8aed851d102a65b5e926d5c777bef927ea62b36d635860eef5364f2046bb5a692d135b6f2b28f34e4a9d44ade9396122c0845bcc7636d35f624747
-  languageName: node
-  linkType: hard
-
 "@types/json-schema@npm:*, @types/json-schema@npm:^7.0.9":
   version: 7.0.11
   resolution: "@types/json-schema@npm:7.0.11"
   checksum: 527bddfe62db9012fccd7627794bd4c71beb77601861055d87e3ee464f2217c85fca7a4b56ae677478367bbd248dbde13553312b7d4dbc702a2f2bbf60c4018d
-  languageName: node
-  linkType: hard
-
-"@types/minimatch@npm:*":
-  version: 5.1.2
-  resolution: "@types/minimatch@npm:5.1.2"
-  checksum: 0391a282860c7cb6fe262c12b99564732401bdaa5e395bee9ca323c312c1a0f45efbf34dce974682036e857db59a5c9b1da522f3d6055aeead7097264c8705a8
   languageName: node
   linkType: hard
 
@@ -301,6 +284,15 @@ __metadata:
   version: 2.7.2
   resolution: "@types/prettier@npm:2.7.2"
   checksum: b47d76a5252265f8d25dd2fe2a5a61dc43ba0e6a96ffdd00c594cb4fd74c1982c2e346497e3472805d97915407a09423804cc2110a0b8e1b22cffcab246479b7
+  languageName: node
+  linkType: hard
+
+"@types/readdir-glob@npm:*":
+  version: 1.1.1
+  resolution: "@types/readdir-glob@npm:1.1.1"
+  dependencies:
+    "@types/node": "*"
+  checksum: cc888be86e729c1e2f799a926c091b464d58016aaee69e08b58878668ec0137e985236775a3eaac14273554bf45c7da92fe19b900370f8d02f47a32709000ba8
   languageName: node
   linkType: hard
 
@@ -630,6 +622,13 @@ __metadata:
   dependencies:
     safer-buffer: ~2.1.0
   checksum: 39f2ae343b03c15ad4f238ba561e626602a3de8d94ae536c46a4a93e69578826305366dc09fbb9b56aec39b4982a463682f259c38e59f6fa380cd72cd61e493d
+  languageName: node
+  linkType: hard
+
+"async-lock@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "async-lock@npm:1.4.0"
+  checksum: a71ef9e50dc448a8e8dd6482494210d7b6f556d4815612b1fed5662216cd756c2c8fb9c2153a9a66ea90b36ba7fb18aa568d11813aadc23feb4c5b0b188df614
   languageName: node
   linkType: hard
 
@@ -979,12 +978,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"docker-compose@npm:^0.23.17":
-  version: 0.23.17
-  resolution: "docker-compose@npm:0.23.17"
+"docker-compose@npm:^0.23.19":
+  version: 0.23.19
+  resolution: "docker-compose@npm:0.23.19"
   dependencies:
     yaml: ^1.10.2
-  checksum: c308bf067cabe178d245b3e499119937b1d2a5effdc9fac6227e04be4308a0250ca7bb1471789b3d0492ea2ce83f74e40b7517a9a5cb540a21355a64e4ad5d3c
+  checksum: 1704825954ec8645e4b099cc2641531955eef5a8a9729c885fab7067ae4d7935c663252e51b49878397e51cd5a3efcf2f13c8460e252aa39d14a0722c0bacfe5
   languageName: node
   linkType: hard
 
@@ -1000,14 +999,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dockerode@npm:^3.3.4":
-  version: 3.3.4
-  resolution: "dockerode@npm:3.3.4"
+"dockerode@npm:^3.3.5":
+  version: 3.3.5
+  resolution: "dockerode@npm:3.3.5"
   dependencies:
     "@balena/dockerignore": ^1.0.2
     docker-modem: ^3.0.0
     tar-fs: ~2.0.1
-  checksum: 6cb4b9d1c42feb3acfa77daf103b070cc412351dc7dc0a1553cc774ccd1be1a1412a87f8aa13c3155c63ec5c61a7cadc833b4248c4d8342814bbf708f795b952
+  checksum: 7f6650422b07fa7ea9d5801f04b1a432634446b5fe37b995b8302b953b64e93abf1bb4596c2fb574ba47aafee685ef2ab959cc86c9654add5a26d09541bbbcc6
   languageName: node
   linkType: hard
 
@@ -2277,9 +2276,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.7":
-  version: 2.6.8
-  resolution: "node-fetch@npm:2.6.8"
+"node-fetch@npm:^2.6.9":
+  version: 2.6.9
+  resolution: "node-fetch@npm:2.6.9"
   dependencies:
     whatwg-url: ^5.0.0
   peerDependencies:
@@ -2287,7 +2286,7 @@ __metadata:
   peerDependenciesMeta:
     encoding:
       optional: true
-  checksum: 91f57be68e29f9b1382750693619e199733a6936998e6d618f1aa779853ad8fc4a2facf170db7957bf1d2510bad33449edf74b5802713d81b63de5986fa3be00
+  checksum: acb04f9ce7224965b2b59e71b33c639794d8991efd73855b0b250921382b38331ffc9d61bce502571f6cc6e11a8905ca9b1b6d4aeb586ab093e2756a1fd190d0
   languageName: node
   linkType: hard
 
@@ -2939,24 +2938,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"testcontainers@npm:9.1.1":
-  version: 9.1.1
-  resolution: "testcontainers@npm:9.1.1"
+"testcontainers@npm:9.3.0":
+  version: 9.3.0
+  resolution: "testcontainers@npm:9.3.0"
   dependencies:
     "@balena/dockerignore": ^1.0.2
-    "@types/archiver": ^5.3.1
-    "@types/dockerode": ^3.3.12
+    "@types/archiver": ^5.3.2
+    "@types/dockerode": ^3.3.15
     archiver: ^5.3.1
+    async-lock: ^1.4.0
     byline: ^5.0.0
     debug: ^4.3.4
-    docker-compose: ^0.23.17
-    dockerode: ^3.3.4
+    docker-compose: ^0.23.19
+    dockerode: ^3.3.5
     get-port: ^5.1.1
-    node-fetch: ^2.6.7
+    node-fetch: ^2.6.9
     properties-reader: ^2.2.0
     ssh-remote-port-forward: ^1.0.4
     tar-fs: ^2.1.1
-  checksum: 1af59b5e63635c8ab7e48a909e9fcaa76b0ac31198c8a474322c0b06563acc098abcae036339511b368bd654e273604a7be594162e5e9ce19d19463ea1d6ebe3
+  checksum: cf38bd36221a27ea9b61003e02e190d9b165d7aebf91a0e21ba34a97379020d9a7cca494a7b907fd96a647068634540449a5f539693448ac9c897319f4a903d1
   languageName: node
   linkType: hard
 
