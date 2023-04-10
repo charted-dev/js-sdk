@@ -1,5 +1,5 @@
 {
-    "name": "@ncharts/typings",
+    "name": "@ncharts/types",
     "description": "🐻‍❄️📦 Generated OpenAPI typings from charted-server's OpenAPI document",
     "version": "0.0.0-devel.0",
     "main": "./dist/index.js",

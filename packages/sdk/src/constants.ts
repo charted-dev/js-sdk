@@ -14,3 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import type { APIVersion } from '@ncharts/types';
+
+/**
+ * Default base URL for the library client.
+ */
+export const DEFAULT_BASE_URL = 'https://charts.noelware.org/api' as const;
+
+/**
+ * The default, supported API version to use
+ */
+export const DEFAULT_API_VERSION: APIVersion = 1;

@@ -4,6 +4,10 @@
     "private": true,
     "version": "0.0.0-dev.0",
     "packageManager": "yarn@3.5.0",
+    "workspaces": [
+        "packages/sdk",
+        "packages/types"
+    ],
     "scripts": {
         "generate:types": "openapi-typescript http://localhost:3651/_openapi -o packages/types/src/generated.d.ts",
         "build": "yarn fmt && yarn lint && rimraf dist && tsx --tsconfig ./scripts/tsconfig.json scripts/build.ts",
