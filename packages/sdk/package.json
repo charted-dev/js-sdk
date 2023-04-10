@@ -1,0 +1,25 @@
+{
+    "name": "@ncharts/sdk",
+    "description": "🐻‍❄️📦 TypeScript SDK library for charted-server",
+    "version": "0.0.0-devel.0",
+    "license": "MIT",
+    "repository": "https://github.com/charted-dev/js-sdk/tree/main/packages/sdk",
+    "bugs": "",
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "typings": "./dist/index.d.ts",
+    "author": "Noelware Team <team@noelware.org>",
+    "maintainers": [
+        "Noel Towa <cutie@floofy.dev>"
+    ],
+    "files": [
+        "dist"
+    ],
+    "exports": {
+        ".": {
+            "require": "./dist/index.js",
+            "import": "./dist/index.mjs",
+            "types": "./dist/index.d.ts"
+        }
+    }
+}

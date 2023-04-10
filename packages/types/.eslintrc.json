@@ -1,0 +1,17 @@
+{
+    "extends": ["prettier"],
+    "ignorePatterns": ["README.md", "src/generated.d.ts"],
+    "overrides": [
+        {
+            "files": ["./src/**/*.ts", "./src/**/*.d.ts"],
+            "extends": ["@augu/eslint-config/ts.js"],
+            "parserOptions": {
+                "project": "packages/types/tsconfig.json"
+            }
+        },
+        {
+            "files": ["./index.js", "./index.mjs"],
+            "extends": ["@augu/eslint-config"]
+        }
+    ]
+}

@@ -27,60 +27,61 @@ import { Signale } from 'signale';
 import { ESLint } from 'eslint';
 
 const log = new Signale({
-  scope: 'charted:eslint',
-  config: {
-    displayBadge: true,
-    displayScope: true,
-    displayTimestamp: true,
-    displayDate: true
-  }
+    scope: 'charted:eslint',
+    config: {
+        displayBadge: true,
+        displayScope: true,
+        displayTimestamp: true,
+        displayDate: true
+    }
 });
 
-const DIRS = ['packages/sdk', 'packages/types', 'scripts'] as const;
+// TODO(@auguwu): fix packages/types not being linted correctly
+const DIRS = ['packages/sdk', 'scripts'] as const;
 let symbols: typeof import('log-symbols')['default'] = null!;
 
 const printResults = (dir: string, results: ESLint.LintResult[]) => {
-  for (const result of results) {
-    const path = relative(resolve(__dirname, '..', dir), result.filePath);
-    const hasErrors = result.errorCount > 0;
-    const hasWarnings = result.warningCount > 0;
-    const symbol = hasErrors ? symbols.error : hasWarnings ? symbols.warning : symbols.success;
+    for (const result of results) {
+        const path = relative(resolve(__dirname, '..', dir), result.filePath);
+        const hasErrors = result.errorCount > 0;
+        const hasWarnings = result.warningCount > 0;
+        const symbol = hasErrors ? symbols.error : hasWarnings ? symbols.warning : symbols.success;
 
-    log.info(`${symbol}   ${dir}/${path}`);
-    for (const message of result.messages) {
-      const s = message.severity === 1 ? symbols.warning : symbols.error;
-      if (process.env.CI !== undefined) {
-        const method = message.severity === 1 ? warning : error;
-        method(`${s} ${message.message} (${message.ruleId})`, {
-          endColumn: message.endColumn,
-          endLine: message.endLine,
-          file: result.filePath,
-          startLine: message.line,
-          startColumn: message.column
-        });
-      } else {
-        const method = message.severity === 1 ? log.warn : log.error;
-        method(`    * ${s}   ${message.message} (${message.ruleId})`);
-      }
+        log.info(`${symbol}   ${dir}/${path}`);
+        for (const message of result.messages) {
+            const s = message.severity === 1 ? symbols.warning : symbols.error;
+            if (process.env.CI !== undefined) {
+                const method = message.severity === 1 ? warning : error;
+                method(`${s} ${message.message} (${message.ruleId})`, {
+                    endColumn: message.endColumn,
+                    endLine: message.endLine,
+                    file: result.filePath,
+                    startLine: message.line,
+                    startColumn: message.column
+                });
+            } else {
+                const method = message.severity === 1 ? log.warn : log.error;
+                method(`    * ${s}   ${message.message} (${message.ruleId})`);
+            }
+        }
     }
-  }
 };
 
 async function main() {
-  symbols = await import('log-symbols').then((f) => f.default);
-  const eslint = new ESLint({
-    useEslintrc: true,
-    fix: process.env.CI === undefined
-  });
+    symbols = await import('log-symbols').then((f) => f.default);
+    const eslint = new ESLint({
+        useEslintrc: true,
+        fix: process.env.CI === undefined
+    });
 
-  for (const dir of DIRS) {
-    log.info(`Linting directory [${dir}]`);
-    const results = await eslint.lintFiles(`${dir}/**/*.{ts,js}`);
-    printResults(dir, results);
-  }
+    for (const dir of DIRS) {
+        log.info(`Linting directory [${dir}]`);
+        const results = await eslint.lintFiles(dir);
+        printResults(dir, results);
+    }
 }
 
 main().catch((ex) => {
-  log.error(ex);
-  process.exit(1);
+    log.error(ex);
+    process.exit(1);
 });

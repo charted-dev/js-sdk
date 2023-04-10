@@ -1,15 +1,14 @@
 {
-  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.base.schema.json",
-  "name": "charted-web",
-  "remoteUser": "noel",
-  "containerUser": "noel",
-  "workspaceFolder": "/workspaces/web",
-  "image": "ghcr.io/auguwu/coder-images/node:latest",
-  "features": {
-    // JetBrains Gateway requires an SSH connection to be available, so,
-    // this is here for that. :)
-    "ghcr.io/devcontainers/features/sshd:1": {
-      "version": "latest"
+    "name": "js-sdk",
+    "remoteUser": "noel",
+    "containerUser": "noel",
+    "workspaceFolder": "/workspaces/js-sdk",
+    "image": "ghcr.io/auguwu/coder-images/node:latest",
+    "features": {
+        // JetBrains Gateway requires an SSH connection to be available, so,
+        // this is here for that. :)
+        "ghcr.io/devcontainers/features/sshd:1": {
+            "version": "latest"
+        }
     }
-  }
 }
