@@ -40,19 +40,31 @@ declare namespace types {
             : never
         : never;
 
-    /**
-     * Mapping of all the query parameters for each {@link Route}.
-     */
-    export type QueryParamMap = {
-        [K in Route]: _QueryParamMap<K>;
+    type _OmitIfNeeded<T, U> = {
+        [K in keyof T as T[K] extends U ? never : K]: T[K];
     };
 
     /**
-     * Mapping of all the path parameters for each {@link Route}.
+     * Mapping of all the query parameters for each {@link Route}. It omits any route
+     * that doesn't have query parameters.
      */
-    export type PathParamMap = {
-        [K in Route]: _PathParamMap<K>;
-    };
+    export type QueryParamMap = _OmitIfNeeded<
+        {
+            [K in Route]: _QueryParamMap<K>;
+        },
+        _QueryParamMap<Route>
+    >;
+
+    /**
+     * Mapping of all the path parameters for each {@link Route}. Omits any route
+     * that doesn't include path parameters.
+     */
+    export type PathParamMap = _OmitIfNeeded<
+        {
+            [K in Route]: _PathParamMap<K>;
+        },
+        _PathParamMap<Route>
+    >;
 
     /**
      * Version number of all the available API versions.
@@ -96,14 +108,14 @@ declare namespace types {
      *
      * - `errors`: A list of API errors that might've occurred when invoking the request.
      */
-    export type ApiResponse<T = never> =
+    export type ApiResponse<T = Unit> =
         | { success: true; data: T }
         | {
               success: false;
               errors: ApiError[];
           };
 
-    export type ApiKeys = generated.components['schemas']['ApiKeys'];
+    export type ApiKeys = Schema<'ApiKeys'>;
 
     /**
      * In Helm, one chart may depend on any number of other charts. These dependencies can be dynamically linked using the dependencies'
@@ -118,7 +130,7 @@ declare namespace types {
      * - `import-values`: ImportValues holds the mapping of source values to parent key to be imported. Each item can be a string or pair of child/parent sublist items.
      * - `alias`: Alias to be used for the chart. Useful when you have to add the same chart multiple times
      */
-    export type ChartDependency = generated.components['schemas']['ChartDependency'];
+    export type ChartDependency = Schema<'ChartDependency'>;
 
     /**
      * Represents a Chart file index from the `index.yaml` file when installing
@@ -141,7 +153,7 @@ declare namespace types {
      * - `dependencies`: List of dependencies for a chart.
      * - `type`: Specifies the chart type: application or library
      */
-    export type ChartIndexSpec = generated.components['schemas']['ChartIndexSpec'];
+    export type ChartIndexSpec = Schema<'ChartIndexSpec'>;
 
     /**
      * Index file in a chart repository.
@@ -154,10 +166,7 @@ declare namespace types {
      * - `entries`: List of repository entries available
      * - `generated`: Date when this `index.yaml` was last generated at
      */
-    export type ChartIndexYaml = Omit<generated.components['schemas']['ChartIndexYaml'], 'generated' | 'entries'> & {
-        generated: string;
-        entries: ChartIndexSpec[];
-    };
+    export type ChartIndexYaml = Schema<'ChartIndexYaml'>;
 
     /**
      * Describes a Chart maintainer.
@@ -166,7 +175,7 @@ declare namespace types {
      * - `email`: Optional email address to contact the named maintainer
      * - `url`: Optional URL to an address for the named maintainer
      */
-    export type ChartMaintainer = generated.components['schemas']['ChartMaintainer'];
+    export type ChartMaintainer = Schema<'ChartMaintainer'>;
 
     /**
      * Represents a Chart file (`chart.yaml`) from a Helm repository.
@@ -188,7 +197,7 @@ declare namespace types {
      * - `dependencies`: List of dependencies for a chart.
      * - `type`: Specifies the chart type: application or library
      */
-    export type ChartSpec = generated.components['schemas']['ChartSpec'];
+    export type ChartSpec = Schema<'ChartSpec'>;
 
     /**
      * Represents the payload for creating a user account with the `PUT /users` REST
@@ -205,7 +214,7 @@ declare namespace types {
      * - If `username` didn't match the Name regex
      * - If `password` didn't match the Password regex
      */
-    export type CreateUserPayload = generated.components['schemas']['CreateUserPayload'];
+    export type CreateUserPayload = Schema<'CreateUserPayload'>;
 
     /**
      * Represents a distribution type that the charted-server instance is running on.
@@ -218,7 +227,7 @@ declare namespace types {
      * - `deb`: If the server is running off the Debian distribution from Noelware's Artifact Registry
      * - `git`: If the server was compiled from source.
      */
-    export type Distribution = generated.components['schemas']['InfoResponse']['distribution'];
+    export type Distribution = Schema<'InfoResponse'>['distribution'];
 
     /**
      * ImportValues holds the mapping of source values to parent key to be imported.
@@ -227,19 +236,20 @@ declare namespace types {
      * - `child`: The source key of the values to be imported
      * - `parent`: The destination path in the parent chart's values
      */
-    export type ImportValue = generated.components['schemas']['ImportValue'];
+    export type ImportValue = Schema<'ImportValue'>;
 
     /**
      * Type discriminator to identify a user, repository, or organization their `Name`
      * or its snowflake ID. This is used if you wish to provide usernames or their
      * IDs when requesting to the API server.
      */
-    export type NameOrSnowflake = string | bigint;
+    export type NameOrSnowflake = string | number;
 
     /**
      * Represents an organization resource. Organizations are a central part
      * to control Helm repositories apart from the owner of the organization,
-     * it is uniquely identified by the web UI.
+     * that is uniquely identified by the web UI and anyone else importing
+     * any charts.
      *
      * - `verified_publisher`: Whether if this organization is a verified publisher on this instance
      * - `twitter_handle`:     The organization's Twitter handle
@@ -252,32 +262,184 @@ declare namespace types {
      * - `name`:               Organization's name
      * - `id`:                 Snowflake ID of the organization to identify itself
      */
-    export type Organization = generated.components['schemas']['Organization'];
-    export type Repository = generated.components['schemas']['Repository'];
-    export type RepositoryRelease = generated.components['schemas']['RepositoryRelease'];
+    export type Organization = Schema<'Organization'>;
+
+    /**
+     * A Helm repository that can be used with `helm install`.
+     *
+     * - `description`: Description about this repository
+     * - `deprecated`:  If the repository is deprecated or not
+     * - `created_at`:  DateTime of when the repository was created
+     * - `updated_at`:  DateTime of when the repository was last updated
+     * - `icon_hash`:   Unique hash to the repository's icon.
+     * - `owner_id`:    Snowflake ID of the owner. This can be an organization or user.
+     * - `private`:     Whether if the repository is private or not
+     * - `name`:        Repository name.
+     * - `type`:        A {@link RepoType repository type}, to uniquely identify what it is.
+     * - `id`:          Snowflake ID of the repository to identify itself
+     */
+    export type Repository = Schema<'Repository'>;
+
+    /**
+     * Represents a single {@link Repository repository} release resource. It is meant
+     * to signale users all the available releases.
+     *
+     * - `update_text`: Markdown text of the changelog.
+     * - `created_at`: DateTime of when the repository release was created
+     * - `updated_at`: DateTime of when the repository release was last updated
+     * - `tag`:        SemVer value of the version that this repository is meant to signale
+     * - `id`:         Snowflake ID of the repository release to identify itself
+     */
+    export type RepositoryRelease = Schema<'RepositoryRelease'>;
+
+    /**
+     * Enum of all the valid {@link Repository repository} types.
+     */
     export type RepoType = 'application' | 'library' | 'operator';
-    export type Session = generated.components['schemas']['Session'];
-    export type StringOrImportValue = generated.components['schemas']['StringOrImportValue'];
-    export type User = generated.components['schemas']['User'];
+
+    /**
+     * Represents a session token object. This is how sessions are stored when authenticating
+     * to charted-server.
+     *
+     * - `refresh_token`: The token for refreshing this session to get a new one.
+     * The web UI uses this token to refresh your session when it expires. This token only lasts for 1 week,
+     * and a new session will need to be created.
+     *
+     * - `access_token`: The token for accessing the API server as the user. This is dangerous to someone who knows your credentials.
+     * - `session_id`:   Unique identifier represented as a `UUID` to identify this session.
+     * - `user_id`:      The user (by ID) who owns this session.
+     */
+    export type Session = Schema<'Session'>;
+
+    /**
+     * Enum to represent that it can be a {@link string}, or a {@link ImportValue} type.
+     */
+    export type StringOrImportValue = Schema<'StringOrImportValue'>;
+
+    /**
+     * Represents an account resource that can create and own repositories
+     * that is tied to their **account**.
+     *
+     * - `verified_publisher`: Whether if this user is a verified publisher.
+     * - `gravatar_email`:     Email to use when using Gravatar for handling avatars
+     * - `description`:        Short paragraph about themselves.
+     * - `avatar_hash`:        Unique hash to identify a user's avatar.
+     * - `created_at`:         DateTime of when the account was created
+     * - `updated_at`:         DateTime of when the account was last updated
+     * - `username`:           Unique name that this account identify as.
+     * - `admin`:              Whether if this user is an administrator of this instance.
+     * - `name`:               A proper name to use, otherwise, applicatons might default to `@{username}`.
+     * - `id`:                 Snowflake ID to identify this account.
+     */
+    export type User = Schema<'User'>;
+
+    /**
+     * A "unit" type, that doesn't return anything.
+     */
+    export type Unit = never;
 
     /**
      * Namespace for all the API responses
      */
     export namespace responses {
         /**
-         * Response for the `GET /repositories` REST controller
+         * Responses for the non-specified API methods (i.e, `/heartbeat`).
          */
-        export type MainRepositoryResponse = ApiResponse<Schema<'MainRepositoryResponse'>>;
+        export namespace main {
+            /**
+             * Response for the `GET /{cdn.prefix}/...` REST controller. This will return a Node.js
+             * Buffer of the CDN contents since it can be anything.
+             */
+            export type CDN = Buffer;
+
+            /**
+             * Response for the `GET /` REST controller.
+             *
+             * - `message`: A cute message, always will be `'Hello, world! 👋'`.
+             * - `tagline`: Short tag-line. Always will be `'You know, for Helm charts?'`.
+             * - `docs`:    URL to the documentation page for that server version.
+             */
+            export type Main = Schema<'MainResponse'>;
+
+            /**
+             * Response for the `GET /info` REST controller.
+             *
+             * - `distribution`: Distribution flavour that was used.
+             * - `commit_sha`:   Git commit of the API server when it was built.
+             * - `build_date`:   RFC3339-formatted date of when the API server was last built
+             * - `product`:      Product name, always going to be `'charted-server'`.
+             * - `version`:      API server version, it will always be a valid SemVer value.
+             * - `vendor`:       Product vendor, always going to be `'Noelware, LLC.'`
+             */
+            export type Info = Schema<'InfoResponse'>;
+
+            /**
+             * Response for the `GET /heartbeat` REST controller.
+             */
+            export type Heartbeat = 'Ok.';
+
+            /**
+             * Response for the `GET /features` REST controller.
+             *
+             * - `docker_registry`: Whether if the external OCI registry experimental feature or the home-made implementation registry feature is enabled or not.
+             * - `registrations`:  Whether if registrations are enabled on the server
+             * - `integrations`:   Mapping of all the session integrations available.
+             * - `audit_logs`:     Whether if the Audit Logging feature is enabled or not.
+             * - `webhooks`:       Whether if this server instance is invite-only.
+             * - `search`:         Whether if the server has search capabilities with the Elasticsearch or Meilisearch backend
+             */
+            export type Features = Schema<'FeaturesResponse'>;
+
+            /**
+             * Response for the `GET /indexes/{id}` REST controller. This will return a YAML string
+             * if `js-yaml` wasn't installed, otherwise, it will return {@link ChartIndexYaml}.
+             */
+            export type IndexMappings = string | types.ChartIndexYaml;
+
+            /**
+             * Response for the `GET /metrics` REST controller. This will always return
+             * a string, even from the SDK.
+             */
+            export type Metrics = string;
+        }
 
         /**
-         * Response for the `GET /organizations` REST controller
+         * Responses for the API Keys endpoints.
          */
-        export type MainOrganizationResponse = ApiResponse<Schema<'MainOrganizationResponse'>>;
+        export namespace apikeys {
+            /**
+             * Response for the `GET /apikeys` REST controller.
+             */
+            export type All = Schema<'ApiKeys'>[];
 
-        /**
-         * Response for the `GET /users/@me/avatars/{hash?}` or `/organizations/{idOrName}/avatars/{hash?}`
-         */
-        export type GetUserOrOrganizationAvatarHashResponse = Buffer | Exclude<ApiResponse, { success: true }>;
+            /**
+             * Response for the `GET /apikeys/{idOrName}` REST controller.
+             */
+            export type Single = Schema<'ApiKeys'>;
+
+            /**
+             * Response for the `PUT /apikeys` REST controller.
+             */
+            export type Create = Schema<'ApiKeys'>;
+
+            /**
+             * Response for the `PATCH /apikeys/{idOrName}` REST controller.
+             */
+            export type Patch = types.Unit;
+
+            /**
+             * Response for the `DELETE /apikeys/{idOrName}` REST controller.
+             */
+            export type Delete = types.Unit;
+        }
+
+        export namespace users {}
+
+        export namespace repositories {
+            export namespace releases {}
+        }
+
+        export namespace organizations {}
     }
 
     /**

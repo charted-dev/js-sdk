@@ -1,6 +1,6 @@
 {
     "editor.tabSize": 4,
     "files.associations": {
-        ".sdk-version": "plaintext"
+        ".*-version": "plaintext"
     }
 }

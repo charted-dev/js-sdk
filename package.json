@@ -9,7 +9,7 @@
         "packages/types"
     ],
     "scripts": {
-        "generate:types": "openapi-typescript http://localhost:3651/_openapi -o packages/types/src/generated.d.ts",
+        "generate:types": "tsx --tsconfig ./scripts/tsconfig.json ./scripts/generate-types.ts",
         "build": "yarn fmt && yarn lint && rimraf dist && tsx --tsconfig ./scripts/tsconfig.json scripts/build.ts",
         "lint": "tsx --tsconfig ./scripts/tsconfig.json scripts/eslint.ts",
         "fmt": "prettier --config ./.prettierrc.json --write **/*.{md,ts,js,tsx,mdx,yaml,yml,json}"
@@ -18,18 +18,22 @@
         "@actions/core": "1.10.0",
         "@augu/eslint-config": "4.0.1",
         "@augu/tsconfig": "1.1.1",
+        "@jsdevtools/npm-publish": "1.4.3",
+        "@noelware/utils": "2.2.1",
         "@types/eslint": "8.37.0",
         "@types/node": "18.15.11",
         "@types/prettier": "2.7.2",
         "@types/signale": "1.4.4",
         "@typescript-eslint/eslint-plugin": "5.58.0",
         "@typescript-eslint/parser": "5.58.0",
+        "colorette": "2.0.19",
         "eslint": "8.38.0",
         "eslint-config-prettier": "8.8.0",
         "log-symbols": "5.1.0",
-        "openapi-typescript": "^6.2.1",
+        "openapi-typescript": "6.2.1",
         "prettier": "2.8.7",
         "signale": "1.4.0",
+        "tsup": "6.7.0",
         "tsx": "3.12.6",
         "typescript": "5.0.4"
     }
