@@ -221,7 +221,7 @@ run(log, async () => {
         now = Date.now();
 
         // packages/sdk/README.md ~> dist/sdk/LICENSE
-        await cp(resolve(packagesDir, 'sdk/README.md'), resolve(rootDistDir, 'sdk/LICENSE'), {
+        await cp(resolve(packagesDir, 'sdk/README.md'), resolve(rootDistDir, 'sdk/README.md'), {
             errorOnExist: false,
             preserveTimestamps: true
         });

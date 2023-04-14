@@ -15,18 +15,34 @@
  * limitations under the License.
  */
 
-import type { APIVersion, NameOrSnowflake, PathParamMap, QueryParamMap, Route } from '@ncharts/types';
+import {
+    APIVersion,
+    ApiResponse,
+    NameOrSnowflake,
+    PathParamMap,
+    QueryParamMap,
+    Route,
+    responses
+} from '@ncharts/types';
 import { DEFAULT_API_VERSION, DEFAULT_BASE_URL } from './constants';
 import type { AbstractAuthStrategy } from './auth';
-import { hasOwnProperty, isObject } from '@noelware/utils';
-import { HTTPError } from './errors/HTTPError';
-import defu from 'defu';
+import { hasOwnProperty, isBrowser, isObject } from '@noelware/utils';
 import { UserContainer } from './containers/users';
+import { HTTPError } from './errors/HTTPError';
+import assert from 'assert';
+import defu from 'defu';
+import { transformJSON, transformYaml } from './internal';
 
 export type HTTPMethod = 'get' | 'put' | 'head' | 'post' | 'patch' | 'delete';
 export const Methods: readonly HTTPMethod[] = ['get', 'put', 'head', 'post', 'patch', 'delete'] as const;
 
 export type Fetch = (input: RequestInit | URL, init?: RequestInit) => Promise<Response>;
+
+// @ts-ignore
+const containers: Readonly<[[string, new (client: Client, ...args: any[]) => any]]> = [
+    ['users', UserContainer],
+    ['@me', UserContainer]
+];
 
 /**
  * Options for the {@link Client} constructor.
@@ -157,6 +173,22 @@ export class Client {
 
         // @ts-ignore
         this.#fetch = global.fetch || options.fetch;
+
+        for (const method of Methods) {
+            this[method] = function (
+                this: Client,
+                endpoint: string,
+                options?: RequestOptions<Route, typeof method, unknown>
+            ) {
+                return this.request.apply(this, [endpoint as any, method, options]);
+            };
+        }
+
+        for (const [key, cls] of containers) {
+            this[key] = function (this: Client, ...args: any[]) {
+                return new cls(this, ...args);
+            };
+        }
     }
 
     // @ts-ignore
@@ -165,7 +197,8 @@ export class Client {
         method: Method,
         options?: RequestOptions<R, Method, Body>
     ): Promise<Response> {
-        if (!Methods.includes(method)) throw new Error(`Unknown method: ${method}`);
+        assert(typeof endpoint === 'string', `endpoint expected to be [string], received: ${typeof endpoint}`);
+        assert(Methods.includes(method), `method [${method}] was not [${Methods.join(', ')}]`);
 
         const url = this._buildUrl(endpoint, options);
         const headers: Record<string, string> = defu({}, options?.headers ?? {}, this.#headers);
@@ -199,7 +232,7 @@ export class Client {
         }
 
         if (this.#authStrategy !== undefined) {
-            headers['authorization'] = `${this.#authStrategy.prefix} ${this.#authStrategy.value}`;
+            headers.Authorization = `${this.#authStrategy.prefix} ${this.#authStrategy.value}`;
         }
 
         const fetchOptions: RequestInit = {
@@ -212,9 +245,143 @@ export class Client {
         return this.#fetch(new URL(url), fetchOptions);
     }
 
-    async heartbeat(options?: RequestOptions<'/heartbeat', 'head'>) {
+    /**
+     * Returns an {@link Buffer} on Node.js, or a {@link ArrayBuffer} in the browser of a CDN object
+     * if the feature is enabled. The prefix is required since it is dynamic (can be configured with
+     * the [`config.cdn.prefix`](https://charts.noelware.org/docs/server/current/self-hosting/configuration#cdn.prefix)
+     * configuration key).
+     *
+     * @param prefix CDN prefix to use. Will default to `/cdn`, if `...paths` was not specified.
+     * @param paths The extra paths to append (i.e, `cdn('/cdn', 'avatars', <uid>, '1234', 'hash.png')` -> `/cdn/avatars/<uid>/1234/hash.png`)
+     * @returns An {@link Buffer} on Node.js, or a {@link ArrayBuffer} in the browser of a CDN object
+     * if the feature is enabled.
+     */
+    cdn(prefix: string = '/cdn', ...paths: string[]) {
+        let path = '';
+        if (!paths.length) path = '/';
+        else {
+            for (let i = 0; i < paths.length; i++) {
+                path += `/${paths[i]}`;
+            }
+        }
+
+        return new Promise<responses.main.CDN>((resolve, reject) =>
+            this.get(`/${prefix}${path}` as unknown as Route)
+                .then(async (resp) => {
+                    if (!resp.ok) {
+                        if (resp.status === 404) {
+                            return reject(new Error("Server doesn't have the CDN feature enabled"));
+                        }
+
+                        return reject(new HTTPError(resp.status));
+                    }
+
+                    const buf = await resp.arrayBuffer();
+                    if (isBrowser) return resolve(buf);
+
+                    const buffer = Buffer.alloc(buf.byteLength);
+                    for (let i = 0; i < buffer.length; i++) {
+                        buffer[i] = buf[i];
+                    }
+
+                    return resolve(buf);
+                })
+                .catch(reject)
+        );
+    }
+
+    /**
+     * Generic main entrypoint.
+     * @param options Request options
+     * @return API response of the {@link responses.main.Main} object.
+     */
+    main(
+        options?: Omit<
+            RequestOptions<'/features', 'get'>,
+            'pathParameters' | 'queryParameters' | 'body' | 'contentType'
+        >
+    ) {
+        return new Promise<ApiResponse<responses.main.Main>>((resolve, reject) =>
+            this.get('/', { contentType: 'application/json', ...(options ?? {}) }).then((resp) =>
+                transformJSON<ApiResponse<responses.main.Main>>(resp).then(resolve).catch(reject)
+            )
+        );
+    }
+
+    /**
+     * Returns minimal information about this current instance.
+     * @param options Request options
+     * @return API response of the {@link responses.main.Info} object.
+     */
+    info(
+        options?: Omit<
+            RequestOptions<'/features', 'get'>,
+            'pathParameters' | 'queryParameters' | 'body' | 'contentType'
+        >
+    ) {
+        return new Promise<ApiResponse<responses.main.Info>>((resolve, reject) =>
+            this.get('/info', { contentType: 'application/json', ...(options ?? {}) }).then((resp) =>
+                transformJSON<ApiResponse<responses.main.Info>>(resp).then(resolve).catch(reject)
+            )
+        );
+    }
+
+    /**
+     * Returns the Prometheus metrics, if enabled.
+     *
+     * @param options Request options
+     * @returns The string representation of the Prometheus metrics, if it is enabled,
+     * or an API response object (usually a 404 if it is not enabled).
+     */
+    metrics(
+        options?: Omit<
+            RequestOptions<'/features', 'get'>,
+            'pathParameters' | 'queryParameters' | 'body' | 'contentType'
+        >
+    ) {
+        return new Promise<ApiResponse | string>((resolve, reject) =>
+            this.get('/metrics' as unknown as Route, options).then((resp) =>
+                !resp.ok && resp.headers.get('content-type')?.includes('application/json')
+                    ? transformJSON<ApiResponse>(resp).then(resolve).catch(reject)
+                    : resp.text().then(resolve).catch(reject)
+            )
+        );
+    }
+
+    /**
+     * Gets all the server features.
+     *
+     * @param options Request options
+     * @returns An API response of the {@link responses.main.Features} object.
+     */
+    features(
+        options?: Omit<
+            RequestOptions<'/features', 'get'>,
+            'pathParameters' | 'queryParameters' | 'body' | 'contentType'
+        >
+    ) {
+        return new Promise<ApiResponse<responses.main.Features>>((resolve, reject) =>
+            this.get('/features', { contentType: 'application/json', ...(options ?? {}) }).then((resp) =>
+                transformJSON<ApiResponse<responses.main.Features>>(resp).then(resolve).catch(reject)
+            )
+        );
+    }
+
+    /**
+     * Sends a heartbeat to the server, this is usually for checking
+     * if the server is alive or not.
+     *
+     * @param options Request options
+     * @returns Nothing if the heartbeat was a success, or an error if the
+     * data was not `Ok.` or if the request failed.
+     * @example
+     * client.heartbeat()
+     *  .then(() => console.log('heartbeat was ok!'))
+     *  .catch(console.error);
+     */
+    heartbeat(options?: RequestOptions<'/heartbeat', 'head'>) {
         return new Promise<void>((resolve, reject) =>
-            this.request('/heartbeat', 'head', options)
+            this.head('/heartbeat', options)
                 .then((resp) => {
                     if (!resp.ok) throw new HTTPError(resp.status);
                     return resp.text();
@@ -227,6 +394,14 @@ export class Client {
         );
     }
 
+    // indexMappings(id: string) {
+    //     return new Promise<responses.main.IndexMappings>((resolve, reject) =>
+    //         this.get('/indexes/{idOrName}', { contentType: 'application/json', pathParameters: {} }).then((resp) =>
+    //             transformYaml<responses.main.IndexMappings>(resp).then(resolve).catch(reject)
+    //         )
+    //     );
+    // }
+
     private _buildUrl<R extends Route>(url: R, options?: RequestOptions<R, HTTPMethod>) {
         let formedUrl = this.#baseURL;
         if (this.#apiVersion !== 'latest') {
@@ -235,7 +410,7 @@ export class Client {
 
         formedUrl += url;
 
-        if (url.match(/([\w\.]+)}/g) && options !== undefined && hasOwnProperty(options, 'pathParameters')) {
+        if (url.match(/{([\w\.]+)}/g) && options !== undefined && hasOwnProperty(options, 'pathParameters')) {
             const params = options.pathParameters as Record<string, unknown>;
             formedUrl = formedUrl.replaceAll(/([\w\.]+)}/g, (_, key) => {
                 if (hasOwnProperty(params, key)) {
@@ -265,14 +440,4 @@ export class Client {
 
         return formedUrl;
     }
-}
-
-for (const method of Methods) {
-    Client.prototype[method] = function (
-        this: Client,
-        endpoint: string,
-        options?: RequestOptions<Route, typeof method, unknown>
-    ) {
-        return this.request.apply(this, [endpoint as any, method, options]);
-    };
 }

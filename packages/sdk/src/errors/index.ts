@@ -15,18 +15,4 @@
  * limitations under the License.
  */
 
-import { Client, type ClientOptions } from './client';
-
-export * as constants from './constants';
-export type * from './client';
-export * from './errors';
-
-/**
- * Creates a new {@link Client} instance.
- *
- * @param options The options object to pass-through, to customize execution
- * options.
- *
- * @returns A {@link Client} instance to use when sending requests.
- */
-export const createClient = (options?: ClientOptions) => new Client(options);
+export * from './HTTPError';

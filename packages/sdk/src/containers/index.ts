@@ -15,18 +15,14 @@
  * limitations under the License.
  */
 
-import { Client, type ClientOptions } from './client';
-
-export * as constants from './constants';
-export type * from './client';
-export * from './errors';
+import type { HTTPMethod, RequestOptions as RequestOptions_ } from '../client';
+import type { Route } from '@ncharts/types';
 
 /**
- * Creates a new {@link Client} instance.
- *
- * @param options The options object to pass-through, to customize execution
- * options.
- *
- * @returns A {@link Client} instance to use when sending requests.
+ * Generic type-alias for the {@link RequestOptions_ RequestOptions} for all container
+ * methods.
  */
-export const createClient = (options?: ClientOptions) => new Client(options);
+export type RequestOptions<R extends Route, M extends HTTPMethod, Body = unknown> = Omit<
+    RequestOptions_<R, M, Body>,
+    'pathParameters' | 'queryParameters' | 'contentType' | 'body'
+>;

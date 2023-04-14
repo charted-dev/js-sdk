@@ -21,14 +21,11 @@ $ pnpm i @ncharts/sdk
 ```
 
 ```ts
-import { createClient, AuthenticationStrategy } from '@ncharts/sdk';
+import { createClient, AuthStrategy } from '@ncharts/sdk';
 
 const client = createClient({
     baseURL: 'https://charts.noelware.org/api',
-    authentication: new AuthenticationStrategy.Basic('username', 'password'),
-    defaultOptions: {
-        // default http client options
-    }
+    auth: new AuthenticationStrategy.Basic('username', 'password')
 });
 
 const noel = await client.users('noel').get();
@@ -37,7 +34,8 @@ const noel = await client.users('noel').get();
 const noelRepos = await noel.repositories.all();
 // => Repository[]
 
-const repo = await client.repositories.create({
+// Create a repository for 'noel/my-repo'
+const repo = await noel.repositories.create({
     name: 'my-repo',
     description: 'Basic description for my repository',
     readme: `# Hello, world!

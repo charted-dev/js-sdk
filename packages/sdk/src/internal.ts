@@ -46,7 +46,7 @@ export const transformYaml = async <T>(resp: Response): Promise<T | string> => {
     // check if we have `js-yaml`
     let yaml: YAML | null = null;
     try {
-        tryRequire('js-yaml');
+        yaml = tryRequire('js-yaml');
     } catch {
         // don't do anything
     }

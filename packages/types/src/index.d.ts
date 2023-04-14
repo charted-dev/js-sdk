@@ -115,6 +115,21 @@ declare namespace types {
               errors: ApiError[];
           };
 
+    /**
+     * Represents a resource to securely use the API server without
+     * exposing your user credentials. This is one of the most recommended
+     * ways to consume the SDK and the API itself.
+     *
+     * - `description`: The description of the API key.
+     * - `expires_in`:  DateTime of when the API key has expired, if it is passed this date, then it is expired.
+     * - `token`:       The token, this is only shown when you create an API key and can never be fetched again due to
+     * security reasons.
+     *
+     * - `scopes`:      Bitfield of all the available scopes this API key has.
+     * - `owner`:       {@link User} resource that owns this API key
+     * - `name`:        API key name.
+     * - `id`:          Snowflake ID to identify itself.
+     */
     export type ApiKeys = Schema<'ApiKeys'>;
 
     /**
@@ -348,9 +363,10 @@ declare namespace types {
         export namespace main {
             /**
              * Response for the `GET /{cdn.prefix}/...` REST controller. This will return a Node.js
-             * Buffer of the CDN contents since it can be anything.
+             * Buffer of the CDN contents, if we're in Node.js, or the underlying `ArrayBuffer` if
+             * in browser.
              */
-            export type CDN = Buffer;
+            export type CDN = Buffer | ArrayBuffer;
 
             /**
              * Response for the `GET /` REST controller.
@@ -410,17 +426,17 @@ declare namespace types {
             /**
              * Response for the `GET /apikeys` REST controller.
              */
-            export type All = Schema<'ApiKeys'>[];
+            export type All = ApiKeys[];
 
             /**
              * Response for the `GET /apikeys/{idOrName}` REST controller.
              */
-            export type Single = Schema<'ApiKeys'>;
+            export type Single = ApiKeys;
 
             /**
              * Response for the `PUT /apikeys` REST controller.
              */
-            export type Create = Schema<'ApiKeys'>;
+            export type Create = ApiKeys;
 
             /**
              * Response for the `PATCH /apikeys/{idOrName}` REST controller.
@@ -433,9 +449,58 @@ declare namespace types {
             export type Delete = types.Unit;
         }
 
-        export namespace users {}
+        export namespace users {
+            /**
+             * Response for the `GET /users/{idOrName}` or `GET /users/@me` REST controller.
+             */
+            export type Single = User;
+
+            /**
+             * Response for the `PUT /users` REST controller.
+             */
+            export type Create = User;
+
+            /**
+             * Response for the `PATCH /users` REST controller.
+             */
+            export type Patch = types.Unit;
+
+            /**
+             * Response for the `DELETE /users` REST controller.
+             */
+            export type Delete = types.Unit;
+        }
 
         export namespace repositories {
+            /**
+             * Response type for the `GET /users/{idOrName}/repositories` or `GET /organizations/{idOrName}/repositories`
+             * REST controller.
+             */
+            export type All = Repository[];
+
+            /**
+             * Response type for the following REST controllers:
+             *  * `GET /users/{idOrName}/repositories/{id}`
+             *  * `GET /organizations/{idOrName}/repositories/{id}`
+             *  * `GET /repositories/{id}`
+             */
+            export type Single = Repository;
+
+            /**
+             * Response type for the `PUT /repositories` REST controller.
+             */
+            export type Create = Repository;
+
+            /**
+             * Response type for the `PATCH /repositories/{id}` REST controller.
+             */
+            export type Patch = Unit;
+
+            /**
+             * Response type for the `DELETE /repositories/{id}` REST controller.
+             */
+            export type Delete = Unit;
+
             export namespace releases {}
         }
 
@@ -446,12 +511,65 @@ declare namespace types {
      * Namespace for all the available request bodies for REST endpoints.
      */
     export namespace payloads {
-        export type CreateApiKeyPayload = Schema<'CreateApiKeyPayload'>;
-        export type CreateOrganizationPayload = Schema<'CreateOrganizationPayload'>;
-        export type CreateRepositoryPayload = Schema<'CreateRepositoryPayload'>;
-        export type CreateRepositoryReleasePayload = Schema<'CreateRepositoryReleasePayload'>;
-        export type CreateUserPayload = Schema<'CreateUserPayload'>;
-        export type UserLoginPayload = Schema<'UserLoginPayload'>;
+        export namespace users {
+            /**
+             * Request body for the `PUT /users` REST controller.
+             */
+            export type CreateUserPayload = Schema<'CreateUserPayload'>;
+
+            /**
+             * Request body for the `PATCH /users` REST controller.
+             */
+            export type PatchUserPayload = Schema<'PatchUserPayload'>;
+        }
+
+        export namespace repositories {
+            /**
+             * Request body for the `PUT /users/@me/repositories` or `PUT /organizations/{idOrName}`
+             * REST controllers.
+             */
+            export type CreateRepositoryPayload = Schema<'CreateRepositoryPayload'>;
+
+            /**
+             * Request body for the `PATCH /repositories/{id}` REST controller.
+             */
+            export type PatchRepositoryPayload = never;
+            export namespace releases {
+                /**
+                 * Request body for the `PUT /repositories/{id}/releases/{version}` REST controller.
+                 */
+                export type CreateRepositoryReleasePayload = Schema<'CreateRepositoryReleasePayload'>;
+
+                /**
+                 * Request body for the `PATCH /repositories/{id}/releases/{version}` REST controller.
+                 */
+                export type PatchRepositoryReleasePayload = never;
+            }
+        }
+
+        export namespace organizations {
+            /**
+             * Request body for the `PUT /organizations` REST controller.
+             */
+            export type CreateOrganizationPayload = Schema<'CreateOrganizationPayload'>;
+
+            /**
+             * Request body for the `PATCH /organizations/{idOrName}` REST controller.
+             */
+            export type PatchOrganizationPayload = never;
+        }
+
+        export namespace apikeys {
+            /**
+             * Request body for the `PUT /apikeys` REST controller.
+             */
+            export type CreateApiKeyPayload = Schema<'CreateApiKeyPayload'>;
+
+            /**
+             * Request body for the `PATCH /apikeys/{id}` REST controller.
+             */
+            export type PatchApiKeyPayload = never;
+        }
     }
 
     type Schema<K extends keyof generated.components['schemas']> = generated.components['schemas'][K];
