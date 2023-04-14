@@ -1,0 +1,78 @@
+# 🐻‍❄️📦 @ncharts/sdk: SDK bindings and typings for charted-server
+# Copyright 2023 Noelware, LLC. <team@noelware.org>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+name: '@ncharts/sdk'
+description: 🐻‍❄️📦 SDK bindings and typings for charted-server
+version: '{{ .Noeldoc.ReadFile "{{ .Cwd }}/.sdk-version" }}'
+pipelines:
+    - id: typedoc
+      name: Typedoc
+      plugins:
+          - dev.noeldoc.plugins:typedoc
+      options:
+          packageManager:
+              - id: yarn
+                downloadUrl: https://classic.yarnpkg.com/latest.tar.gz
+          nodeVersions:
+              - version: 19.9.0
+                distributions:
+                    - os: darwin
+                      arch: arm64
+                      shasum: 13f7f0e57a2123e55a3172b65e08bc2a51fb52bf366a83d7dda12456ebdc3da0
+                      downloadUrl: https://nodejs.org/dist/v19.9.0/node-v19.9.0-darwin-arm64.tar.gz
+                    - os: darwin
+                      arch: x64
+                      shasum: 4f1a5b72ef0bcb6757e5daaf3fcf2c26fa35dc5d5fdff7692b63775ed51934a4
+                      downloadUrl: https://nodejs.org/dist/v19.9.0/node-v19.9.0-darwin-x64.tar.gz
+                    - os: linux
+                      arch: arm64
+                      shasum: 1ebddd6ac062270ac895233b78eb0feabc5fd08ea88502dfede626f4a1b4b037
+                      downloadUrl: https://nodejs.org/dist/v19.9.0/node-v19.9.0-linux-arm64.tar.gz
+                    - os: linux
+                      arch: x64
+                      shasum: 15168a298d150335c098f19449f9baef0b0758466723fafc23ef209156dae604
+                      downloadUrl: https://nodejs.org/dist/v19.9.0/node-v19.9.0-linux-x64.tar.gz
+                    - os: windows
+                      arch: x64
+                      shasum: 589f7880af8de21ee371de8c06a85b5e996d049bf499fbac1245fb10b441e504
+                      downloadUrl: https://nodejs.org/dist/v19.9.0/node-v19.9.0-win-x64.zip
+          workspaces:
+              - name: '@ncharts/sdk'
+                options:
+                    displayName: JavaScript SDK
+                    entryPoint: '{{.Cwd}}/packages/sdk/src/index.ts'
+                    tsconfig: '{{.Cwd}}/packages/sdk/tsconfig.json'
+              - name: '@ncharts/types'
+                options:
+                    displayName: Server Typings
+                    tsconfig: '{{.Cwd}}/packages/sdk/tsconfig.json'
+                    declarations:
+                        - '{{ .Plugins.Typedoc.WorkspaceDir }}/src/index.d.ts'
+renderers:
+    - id: markdown
+      name: Turn into Markdown
+      renderers:
+          - dev.noeldoc.renderers:markdown
+      registries: [official]
+      needs: [pipelines.typedoc]
+      options:
+          validate: true
+          mdx: false

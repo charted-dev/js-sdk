@@ -47,7 +47,10 @@ const printResults = (dir: string, results: ESLint.LintResult[]) => {
         const hasWarnings = result.warningCount > 0;
         const symbol = hasErrors ? symbols.error : hasWarnings ? symbols.warning : symbols.success;
 
-        log.info(`${symbol}   ${dir}/${path}`);
+        log[hasErrors ? 'error' : hasWarnings ? 'warn' : 'success'](
+            `${hasErrors || hasWarnings ? `${symbol}   ` : '    '}${dir}/${path}`
+        );
+
         for (const message of result.messages) {
             const s = message.severity === 1 ? symbols.warning : symbols.error;
             if (process.env.CI !== undefined) {
