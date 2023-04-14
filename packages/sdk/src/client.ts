@@ -142,15 +142,63 @@ export class Client {
     #headers: Record<string, string>;
     #fetch: Fetch;
 
+    /**
+     * Sends a DELETE request to the API server.
+     * @param endpoint The endpoint to send the request to
+     * @param options Request options, if any.
+     * @return Standard web HTTP response.
+     */
     delete!: <Body, R extends Route>(endpoint: R, options?: RequestOptions<R, 'delete', Body>) => Promise<Response>;
+
+    /**
+     * Sends a PATCH request to the API server.
+     * @param endpoint The endpoint to send the request to
+     * @param options Request options, if any.
+     * @return Standard web HTTP response.
+     */
     patch!: <Body, R extends Route>(endpoint: R, options?: RequestOptions<R, 'patch', Body>) => Promise<Response>;
+
+    /**
+     * Sends a POST request to the API server.
+     * @param endpoint The endpoint to send the request to
+     * @param options Request options, if any.
+     * @return Standard web HTTP response.
+     */
     post!: <Body, R extends Route>(endpoint: R, options?: RequestOptions<R, 'post', Body>) => Promise<Response>;
+
+    /**
+     * Sends a HEAD request to the API server.
+     * @param endpoint The endpoint to send the request to
+     * @param options Request options, if any.
+     * @return Standard web HTTP response.
+     */
     head!: <Body, R extends Route>(endpoint: R, options?: RequestOptions<R, 'head', Body>) => Promise<Response>;
+
+    /**
+     * Sends a PUT request to the API server.
+     * @param endpoint The endpoint to send the request to
+     * @param options Request options, if any.
+     * @return Standard web HTTP response.
+     */
     put!: <Body, R extends Route>(endpoint: R, options?: RequestOptions<R, 'put', Body>) => Promise<Response>;
+
+    /**
+     * Sends a GET request to the API server.
+     * @param endpoint The endpoint to send the request to
+     * @param options Request options, if any.
+     * @return Standard web HTTP response.
+     */
     get!: <Body, R extends Route>(endpoint: R, options?: RequestOptions<R, 'get', Body>) => Promise<Response>;
 
-    ['@me']!: UserContainer;
+    /**
+     * Returns a {@link UserContainer} based on the passed-in {@link NameOrSnowflake}.
+     * @param idOrName The username or the user's ID to pass in.
+     * @return The {@link UserContainer} to do such methods.
+     */
     users!: (idOrName: NameOrSnowflake) => UserContainer;
+
+    /** {@link UserContainer} that redirects requests to `/users/@me`. */
+    me!: UserContainer;
 
     constructor(options: ClientOptions = kClientOptions) {
         this.#authStrategy = options.auth;
@@ -185,6 +233,10 @@ export class Client {
         }
 
         for (const [key, cls] of containers) {
+            if (key === '@me' && this[key] === undefined) {
+                this[key] = new cls(this, '@me');
+            }
+
             this[key] = function (this: Client, ...args: any[]) {
                 return new cls(this, ...args);
             };
