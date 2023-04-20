@@ -28,6 +28,6 @@
         "defu": "6.1.2"
     },
     "devDependencies": {
-        "@types/node": "18.15.11"
+        "@types/node": "18.15.12"
     }
 }
