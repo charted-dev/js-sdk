@@ -15,10 +15,4 @@
  * limitations under the License.
  */
 
-process.emitWarning('Do not import this module into code', {
-    code: 'NLW_NOT_IMPORTABLE',
-    detail: [
-        'Importing @ncharts/types into your application is *not* recommended',
-        'Please use `import type {} from "@ncharts/types"` to remove this warning'
-    ].join('\n')
-});
+// no-op

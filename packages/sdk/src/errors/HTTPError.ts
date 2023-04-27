@@ -23,7 +23,7 @@ import { isObject } from '@noelware/utils';
  */
 export class HTTPError extends Error {
     constructor(public readonly statusCode: number, errors: ApiError<unknown>[] = []) {
-        super(`Received status code [${statusCode}] with errors:\n${HTTPError._formatErrors(errors)}`);
+        super(`Received status code [${statusCode}] with errors\n${HTTPError._formatErrors(errors)}`.trim());
     }
 
     private static _formatErrors(errors: ApiError<unknown>[]) {
@@ -41,6 +41,6 @@ export class HTTPError extends Error {
             }\n`;
         }
 
-        return buf;
+        return buf.trim();
     }
 }

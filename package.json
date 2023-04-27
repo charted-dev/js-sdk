@@ -10,6 +10,7 @@
     ],
     "scripts": {
         "generate:types": "tsx --tsconfig ./scripts/tsconfig.json ./scripts/generate-types.ts",
+        "publish": "tsx --tsconfig ./scripts/tsconfig.json ./scripts/publish.ts",
         "build": "yarn fmt && yarn lint && rimraf dist && tsx --tsconfig ./scripts/tsconfig.json scripts/build.ts",
         "lint": "tsx --tsconfig ./scripts/tsconfig.json scripts/eslint.ts",
         "fmt": "prettier --config ./.prettierrc.json --write **/*.{md,ts,js,tsx,mdx,yaml,yml,json}"

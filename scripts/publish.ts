@@ -21,10 +21,10 @@
  * SOFTWARE.
  */
 
-import { Signale } from 'signale';
+import { npmPublish } from '@jsdevtools/npm-publish';
 import { readFile } from 'fs/promises';
+import { Signale } from 'signale';
 import { resolve } from 'path';
-import npmPublish from '@jsdevtools/npm-publish';
 import { bold } from 'colorette';
 import run from './util/run';
 
@@ -55,7 +55,9 @@ run(log, async () => {
     });
 
     log.info(
-        `🐻‍❄️✨ Published ${bold(`@ncharts/types@${resultsForTypes.oldVersion}`)} ~> ${bold(`@ncharts/types@${version}`)}`
+        `🐻‍❄️✨ Published ${
+            resultsForTypes.oldVersion !== undefined ? `${bold(`@ncharts/types@${resultsForTypes.oldVersion}`)} ~>` : ''
+        } ${bold(`@ncharts/types@${version}`)}`.trim()
     );
 
     // wait for NPM to propagate @ncharts/types
@@ -69,6 +71,8 @@ run(log, async () => {
     });
 
     log.info(
-        `🐻‍❄️✨ Published ${bold(`@ncharts/sdk@${resultsForSdk.oldVersion}`)} ~> ${bold(`@ncharts/sdk@${version}`)}`
+        `🐻‍❄️✨ Published ${
+            resultsForSdk.oldVersion !== undefined ? `${bold(`@ncharts/sdk@${resultsForSdk.oldVersion}`)} ~>` : ''
+        } ${bold(`@ncharts/sdk@${version}`)}`.trim()
     );
 });
