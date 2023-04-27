@@ -46,7 +46,7 @@ jobs:
               run: yarn install --immutable
 
             - name: Install tsx
-              run: npm i -g tsx
+              run: npm i -g tsx prettier eslint
 
             - name: Build distribution
               run: yarn build
