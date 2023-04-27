@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {
+import type {
     APIVersion,
     ApiResponse,
     NameOrSnowflake,
@@ -24,24 +24,41 @@ import {
     Route,
     responses
 } from '@ncharts/types';
+
 import { DEFAULT_API_VERSION, DEFAULT_BASE_URL } from './constants';
-import type { AbstractAuthStrategy } from './auth';
 import { hasOwnProperty, isBrowser, isObject } from '@noelware/utils';
+import { transformJSON, transformYaml } from './internal';
+import type { AbstractAuthStrategy } from './auth';
+import { OrganizationContainer } from './containers/organizations';
+import { ApiKeysContainer } from './containers/apikeys';
 import { UserContainer } from './containers/users';
 import { HTTPError } from './errors/HTTPError';
 import assert from 'assert';
 import defu from 'defu';
-import { transformJSON, transformYaml } from './internal';
 
 export type HTTPMethod = 'get' | 'put' | 'head' | 'post' | 'patch' | 'delete';
 export const Methods: readonly HTTPMethod[] = ['get', 'put', 'head', 'post', 'patch', 'delete'] as const;
 
+/**
+ * Fetch implementation blue-print.
+ */
 export type Fetch = (input: RequestInit | URL, init?: RequestInit) => Promise<Response>;
 
+/**
+ * FormData implementation blue-print
+ */
+export interface FormData {
+    new (...args: any[]): FormData;
+
+    append(name: string, value: any, fileName?: string): void;
+    getBoundary?(): void;
+}
+
 // @ts-ignore
-const containers: Readonly<[[string, new (client: Client, ...args: any[]) => any]]> = [
-    ['users', UserContainer],
-    ['@me', UserContainer]
+const containers: Readonly<[[string, new (client: Client, ...args: any[]) => any, boolean]]> = [
+    ['organizations', OrganizationContainer, true],
+    ['apikeys', ApiKeysContainer, false],
+    ['users', UserContainer, true]
 ];
 
 /**
@@ -55,6 +72,15 @@ export interface ClientOptions {
      * @default 1
      */
     apiVersion?: APIVersion | 'latest';
+
+    /**
+     * {@link FormData} implementation when sending `multipart/form-data` requests. This will opt into the global's
+     * FormData implementation (if in the browser), or it will error when sending requests in.
+     *
+     * To avoid any errors when requesting data, you will need to install the [form-data](https://npm.im/form-data)
+     * Node.js package to send form data.
+     */
+    FormData?: { new (...args: any[]): FormData };
 
     /**
      * Base URL to send requests to
@@ -102,9 +128,9 @@ export interface RequestOptions<R extends Route, Method extends HTTPMethod, Body
     fetchOptions?: Omit<RequestInit, 'body' | 'headers' | 'method' | 'window'>;
 
     /**
-     * The determined `Content-Type` value to use
+     * The determined `Content-Type` value to use.
      */
-    contentType?: string;
+    contentType?: 'application/json' | 'form-data';
 
     /**
      * Any additional headers to append to this request
@@ -138,6 +164,7 @@ const kClientOptions = {
 export class Client {
     #authStrategy: AbstractAuthStrategy | undefined;
     #apiVersion: APIVersion | 'latest';
+    #FormData: { new (...args: any[]): FormData };
     #baseURL: string;
     #headers: Record<string, string>;
     #fetch: Fetch;
@@ -148,7 +175,10 @@ export class Client {
      * @param options Request options, if any.
      * @return Standard web HTTP response.
      */
-    delete!: <Body, R extends Route>(endpoint: R, options?: RequestOptions<R, 'delete', Body>) => Promise<Response>;
+    readonly delete!: <Body, R extends Route>(
+        endpoint: R,
+        options?: RequestOptions<R, 'delete', Body>
+    ) => Promise<Response>;
 
     /**
      * Sends a PATCH request to the API server.
@@ -156,7 +186,10 @@ export class Client {
      * @param options Request options, if any.
      * @return Standard web HTTP response.
      */
-    patch!: <Body, R extends Route>(endpoint: R, options?: RequestOptions<R, 'patch', Body>) => Promise<Response>;
+    readonly patch!: <Body, R extends Route>(
+        endpoint: R,
+        options?: RequestOptions<R, 'patch', Body>
+    ) => Promise<Response>;
 
     /**
      * Sends a POST request to the API server.
@@ -164,7 +197,10 @@ export class Client {
      * @param options Request options, if any.
      * @return Standard web HTTP response.
      */
-    post!: <Body, R extends Route>(endpoint: R, options?: RequestOptions<R, 'post', Body>) => Promise<Response>;
+    readonly post!: <Body, R extends Route>(
+        endpoint: R,
+        options?: RequestOptions<R, 'post', Body>
+    ) => Promise<Response>;
 
     /**
      * Sends a HEAD request to the API server.
@@ -172,7 +208,10 @@ export class Client {
      * @param options Request options, if any.
      * @return Standard web HTTP response.
      */
-    head!: <Body, R extends Route>(endpoint: R, options?: RequestOptions<R, 'head', Body>) => Promise<Response>;
+    readonly head!: <Body, R extends Route>(
+        endpoint: R,
+        options?: RequestOptions<R, 'head', Body>
+    ) => Promise<Response>;
 
     /**
      * Sends a PUT request to the API server.
@@ -180,7 +219,7 @@ export class Client {
      * @param options Request options, if any.
      * @return Standard web HTTP response.
      */
-    put!: <Body, R extends Route>(endpoint: R, options?: RequestOptions<R, 'put', Body>) => Promise<Response>;
+    readonly put!: <Body, R extends Route>(endpoint: R, options?: RequestOptions<R, 'put', Body>) => Promise<Response>;
 
     /**
      * Sends a GET request to the API server.
@@ -188,17 +227,27 @@ export class Client {
      * @param options Request options, if any.
      * @return Standard web HTTP response.
      */
-    get!: <Body, R extends Route>(endpoint: R, options?: RequestOptions<R, 'get', Body>) => Promise<Response>;
+    readonly get!: <Body, R extends Route>(endpoint: R, options?: RequestOptions<R, 'get', Body>) => Promise<Response>;
+
+    /**
+     * Returns a {@link OrganizationContainer} based on the passed-in {@link NameOrSnowflake}.
+     * @param idOrName The organization name or ID to pass in.
+     * @return The {@link OrganizationContainer} to do such methods.
+     */
+    readonly organizations!: (idOrName: NameOrSnowflake) => OrganizationContainer;
+
+    /** Container for sending requests to the API Keys API. */
+    readonly apikeys!: ApiKeysContainer;
 
     /**
      * Returns a {@link UserContainer} based on the passed-in {@link NameOrSnowflake}.
      * @param idOrName The username or the user's ID to pass in.
      * @return The {@link UserContainer} to do such methods.
      */
-    users!: (idOrName: NameOrSnowflake) => UserContainer;
+    readonly users!: (idOrName: NameOrSnowflake) => UserContainer;
 
     /** {@link UserContainer} that redirects requests to `/users/@me`. */
-    me!: UserContainer;
+    readonly me!: UserContainer;
 
     constructor(options: ClientOptions = kClientOptions) {
         this.#authStrategy = options.auth;
@@ -206,7 +255,8 @@ export class Client {
         this.#baseURL = options.baseURL || DEFAULT_BASE_URL;
         this.#headers = options.headers || {};
 
-        if (global.fetch === undefined || options.fetch === undefined) {
+        // if there is no `global.fetch` impl and `options.fetch` is not defined
+        if (global.fetch === undefined && options.fetch === undefined) {
             const [major, minor] = process.version.split('.').map(Number);
             if ((major < 16 && minor < 15) || (major === 17 && minor < 5)) {
                 throw new Error(
@@ -222,6 +272,8 @@ export class Client {
         // @ts-ignore
         this.#fetch = global.fetch || options.fetch;
 
+        // @ts-ignore
+        this.#FormData = global.FormData || options.FormData;
         for (const method of Methods) {
             this[method] = function (
                 this: Client,
@@ -232,15 +284,17 @@ export class Client {
             };
         }
 
-        for (const [key, cls] of containers) {
-            if (key === '@me' && this[key] === undefined) {
-                this[key] = new cls(this, '@me');
-            }
+        for (const [key, cls, isFunction] of containers) {
+            if (this[key]) continue;
 
-            this[key] = function (this: Client, ...args: any[]) {
-                return new cls(this, ...args);
-            };
+            this[key] = isFunction
+                ? function (this: Client, ...args: any[]) {
+                      return new cls(this, ...args);
+                  }
+                : new cls(this);
         }
+
+        this.me = new UserContainer(this, '@me');
     }
 
     // @ts-ignore
@@ -280,6 +334,20 @@ export class Client {
 
                     body = JSON.stringify(options.body);
                 }
+
+                const FormData = this.#FormData;
+                if (options.contentType === 'form-data' && !FormData)
+                    throw new Error('Missing form-data dependency in Node.js');
+
+                if (options.contentType === 'form-data' && options.body instanceof FormData) {
+                    const body = options.body as FormData;
+                    if (body.getBoundary !== undefined) {
+                        headers['content-type'] = `multipart/form-data; boundary=${body.getBoundary()}`;
+                    }
+                }
+
+                // we can't infer it, so we'll just do it here lol
+                body = options.body as any;
             }
         }
 
@@ -294,7 +362,7 @@ export class Client {
         };
 
         if (body !== null) fetchOptions.body = body;
-        return this.#fetch(new URL(url), fetchOptions);
+        return this.#fetch(new URL(url, this.#baseURL), fetchOptions);
     }
 
     /**
@@ -308,7 +376,7 @@ export class Client {
      * @returns An {@link Buffer} on Node.js, or a {@link ArrayBuffer} in the browser of a CDN object
      * if the feature is enabled.
      */
-    cdn(prefix: string = '/cdn', ...paths: string[]) {
+    async cdn(prefix: string = '/cdn', ...paths: string[]): Promise<responses.main.CDN> {
         let path = '';
         if (!paths.length) path = '/';
         else {
@@ -317,29 +385,38 @@ export class Client {
             }
         }
 
-        return new Promise<responses.main.CDN>((resolve, reject) =>
-            this.get(`/${prefix}${path}` as unknown as Route)
-                .then(async (resp) => {
-                    if (!resp.ok) {
-                        if (resp.status === 404) {
-                            return reject(new Error("Server doesn't have the CDN feature enabled"));
+        const resp = await this.get(`/${prefix}${path}` as unknown as Route);
+        if (!resp.ok) {
+            if (resp.status === 404) throw new Error('Server does not have CDN feature enabled');
+
+            const data = await transformJSON<
+                Exclude<ApiResponse<never, { sdk: true; error: unknown } | undefined>, { success: true }>
+            >(resp).catch((err) => ({
+                success: false,
+                errors: [
+                    {
+                        code: 'UNABLE_TO_PARSE',
+                        message: err.message,
+                        detail: {
+                            sdk: true,
+                            error: err
                         }
-
-                        return reject(new HTTPError(resp.status));
                     }
+                ]
+            }));
 
-                    const buf = await resp.arrayBuffer();
-                    if (isBrowser) return resolve(buf);
+            throw new HTTPError(resp.status, hasOwnProperty(data, 'errors') ? data.errors : []);
+        }
 
-                    const buffer = Buffer.alloc(buf.byteLength);
-                    for (let i = 0; i < buffer.length; i++) {
-                        buffer[i] = buf[i];
-                    }
+        const buf = await resp.arrayBuffer();
+        if (isBrowser) return buf;
 
-                    return resolve(buf);
-                })
-                .catch(reject)
-        );
+        const buffer = Buffer.alloc(buf.byteLength);
+        for (let i = 0; i < buf.byteLength; i++) {
+            buffer[i] = buf[i];
+        }
+
+        return buffer;
     }
 
     /**
@@ -386,13 +463,14 @@ export class Client {
      * or an API response object (usually a 404 if it is not enabled).
      */
     metrics(
+        path: string,
         options?: Omit<
             RequestOptions<'/features', 'get'>,
             'pathParameters' | 'queryParameters' | 'body' | 'contentType'
         >
     ) {
         return new Promise<ApiResponse | string>((resolve, reject) =>
-            this.get('/metrics' as unknown as Route, options).then((resp) =>
+            this.get(path as unknown as Route, options).then((resp) =>
                 !resp.ok && resp.headers.get('content-type')?.includes('application/json')
                     ? transformJSON<ApiResponse>(resp).then(resolve).catch(reject)
                     : resp.text().then(resolve).catch(reject)
@@ -431,7 +509,12 @@ export class Client {
      *  .then(() => console.log('heartbeat was ok!'))
      *  .catch(console.error);
      */
-    heartbeat(options?: RequestOptions<'/heartbeat', 'head'>) {
+    heartbeat(
+        options?: Omit<
+            RequestOptions<'/heartbeat', 'head'>,
+            'pathParameters' | 'queryParameters' | 'body' | 'contentType'
+        >
+    ) {
         return new Promise<void>((resolve, reject) =>
             this.head('/heartbeat', options)
                 .then((resp) => {
@@ -446,13 +529,36 @@ export class Client {
         );
     }
 
-    // indexMappings(id: string) {
-    //     return new Promise<responses.main.IndexMappings>((resolve, reject) =>
-    //         this.get('/indexes/{idOrName}', { contentType: 'application/json', pathParameters: {} }).then((resp) =>
-    //             transformYaml<responses.main.IndexMappings>(resp).then(resolve).catch(reject)
-    //         )
-    //     );
-    // }
+    /**
+     * Retrieves a user or organization's chart index, which Helm will use to determine
+     * how to download a repository.
+     *
+     * @param idOrName The snowflake ID or user/organization name.
+     * @param options Request options
+     * @returns The {@link responses.main.IndexMappings IndexMappings} object,
+     * if a YAML parser is available (need to install [js-yaml](https://npm.im/js-yaml)),
+     * or a String if a YAML parser is not available.
+     */
+    indexMappings(
+        idOrName: NameOrSnowflake,
+        options?: Omit<
+            RequestOptions<'/indexes/{idOrName}', 'get'>,
+            'pathParameters' | 'queryParameters' | 'body' | 'contentType'
+        >
+    ): Promise<responses.main.IndexMappings> {
+        return new Promise((resolve, reject) =>
+            this.get('/indexes/{idOrName}', {
+                contentType: 'application/json',
+
+                // @ts-ignore
+                pathParameters: {
+                    idOrName
+                },
+
+                ...(options ?? {})
+            }).then((resp) => transformYaml<responses.main.IndexMappings>(resp).then(resolve).catch(reject))
+        );
+    }
 
     private _buildUrl<R extends Route>(url: R, options?: RequestOptions<R, HTTPMethod>) {
         let formedUrl = this.#baseURL;

@@ -108,11 +108,11 @@ declare namespace types {
      *
      * - `errors`: A list of API errors that might've occurred when invoking the request.
      */
-    export type ApiResponse<T = Unit> =
+    export type ApiResponse<T = Unit, E = Unit> =
         | { success: true; data: T }
         | {
               success: false;
-              errors: ApiError[];
+              errors: ApiError<E>[];
           };
 
     /**

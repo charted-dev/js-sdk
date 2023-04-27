@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import { ApiResponse, NameOrSnowflake, Unit, payloads, responses } from '@ncharts/types';
+import type { ApiResponse, NameOrSnowflake, payloads, responses } from '@ncharts/types';
+import { RepositoryContainer } from './repositories';
 import type { RequestOptions } from '.';
 import { transformJSON } from '../internal';
 import type { Client } from '../client';
@@ -95,60 +96,10 @@ export class UserContainer {
     }
 
     /**
-     * Gets this user's repositories. Use the {@link Client.repositories} function
-     * to access the repository container.
-     *
-     * @param options Request options
-     * @returns API response as a {@link Promise Promise}.
+     * Returns the {@link RepositoryContainer} to do operations on
+     * this user's repositories.
      */
-    repositories(
-        options?: Omit<
-            RequestOptions<'/users/{idOrName}/repositories', 'delete'>,
-            'pathParemters' | 'contentType' | 'queryParameters' | 'body'
-        >
-    ): Promise<ApiResponse<responses.repositories.All>> {
-        return new Promise((resolve, reject) =>
-            this.#client
-                .get('/users/{idOrName}/repositories', {
-                    contentType: 'application/json',
-                    pathParameters: {
-                        idOrName: this.#idOrName
-                    },
-
-                    ...(options ?? {})
-                })
-                .then((resp) =>
-                    transformJSON<ApiResponse<responses.repositories.All>>(resp).then(resolve).catch(reject)
-                )
-        );
-    }
-
-    repository(
-        id: string,
-        options?: RequestOptions<'/users/{idOrName}/repositories/{id}', 'get'>
-    ): Promise<ApiResponse<responses.repositories.Single>> {
-        return new Promise((resolve, reject) =>
-            this.#client
-                .get('/users/{idOrName}/repositories/{id}', {
-                    contentType: 'application/json',
-                    pathParameters: {
-                        idOrName: this.#idOrName,
-                        id: id as unknown as number // trick the compiler since it'll be used as a parameter (which are strings)
-                    },
-
-                    ...(options ?? {})
-                })
-                .then((resp) =>
-                    transformJSON<ApiResponse<responses.repositories.Single>>(resp).then(resolve).catch(reject)
-                )
-        );
-    }
-
-    organizations(): Unit {
-        throw new Error('coming soon');
-    }
-
-    organization(): Unit {
-        throw new Error('coming soon');
+    get repositories() {
+        return new RepositoryContainer(this.#client, this.#idOrName, 'user');
     }
 }

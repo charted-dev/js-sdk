@@ -22,17 +22,21 @@ import { isObject } from '@noelware/utils';
  * {@link Error} that represents an HTTP error.
  */
 export class HTTPError extends Error {
-    constructor(public readonly statusCode: number, errors: ApiError[] = []) {
+    constructor(public readonly statusCode: number, errors: ApiError<unknown>[] = []) {
         super(`Received status code [${statusCode}] with errors:\n${HTTPError._formatErrors(errors)}`);
     }
 
-    private static _formatErrors(errors: ApiError[]) {
+    private static _formatErrors(errors: ApiError<unknown>[]) {
         let buf = '';
         for (let i = 0; i < errors.length; i++) {
             const error = errors[i];
             buf += `[${error.code}]: ${error.message}${
                 error.detail !== undefined
-                    ? `\n${isObject(error.detail) ? JSON.parse(error.detail) : String(error.detail)}`
+                    ? `\n${
+                          error.detail !== null && isObject(error.detail)
+                              ? JSON.stringify(error.detail)
+                              : String(error.detail)
+                      }`
                     : ''
             }\n`;
         }
