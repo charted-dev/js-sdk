@@ -372,9 +372,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jsdevtools/npm-publish@npm:2.0.0":
-  version: 2.0.0
-  resolution: "@jsdevtools/npm-publish@npm:2.0.0"
+"@jsdevtools/npm-publish@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@jsdevtools/npm-publish@npm:2.1.0"
   dependencies:
     "@types/semver": ^7.3.13
     command-line-args: ^5.1.1
@@ -382,7 +382,7 @@ __metadata:
     tar: ^6.1.13
   bin:
     npm-publish: bin/npm-publish.js
-  checksum: d8b735c2c03471ea5b031fd5b32919c8eee74fa22d63554148aea7ea7d461ed1284b88cfc4aadbb83c180c6f1a64152e658db1aa21f36b69ef5d7caee9e7a5e2
+  checksum: 5a440225b1d660cad3776fc8f51d8eb84a1475fbe44ead563c76beee96ccbe150823eddb574f2ef584cb0d9e90a70a10a06b6580452d4f3d2cb92645c60f3541
   languageName: node
   linkType: hard
 
@@ -393,7 +393,7 @@ __metadata:
     "@actions/core": 1.10.0
     "@augu/eslint-config": 4.0.1
     "@augu/tsconfig": 1.1.1
-    "@jsdevtools/npm-publish": 2.0.0
+    "@jsdevtools/npm-publish": 2.1.0
     "@noelware/utils": 2.2.1
     "@types/eslint": 8.37.0
     "@types/node": 18.16.3
