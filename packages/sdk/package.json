@@ -24,7 +24,7 @@
     },
     "dependencies": {
         "@ncharts/types": "workspace:^",
-        "@noelware/utils": "2.2.1",
+        "@noelware/utils": "2.3.0",
         "defu": "6.1.2"
     },
     "devDependencies": {
