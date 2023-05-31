@@ -22,9 +22,28 @@ interface YAML {
     load(text: string, ...args: any[]): unknown;
 }
 
+export const assert = (condition: boolean, message: string) => {
+    if (!condition) {
+        throw new Error(message);
+    }
+};
+
 export const transformJSON = async <T>(resp: Response) => {
     if (!resp.ok) {
-        const data = await resp.json().catch(() => ({}));
+        const data = await resp.json().catch((ex) => ({
+            success: false,
+            errors: [
+                {
+                    code: 'SDK_ERROR',
+                    message: ex instanceof Error ? ex.message : 'Unknown error',
+                    details: {
+                        sdk: true,
+                        error: ex
+                    }
+                }
+            ]
+        }));
+
         throw new HTTPError(resp.status, hasOwnProperty(data, 'errors') ? data.errors : []);
     }
 

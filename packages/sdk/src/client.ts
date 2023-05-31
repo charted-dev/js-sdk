@@ -25,15 +25,14 @@ import type {
     responses
 } from '@ncharts/types';
 
+import { hasOwnProperty, isBrowser, isObject, type Ctor } from '@noelware/utils';
 import { DEFAULT_API_VERSION, DEFAULT_BASE_URL } from './constants';
-import { hasOwnProperty, isBrowser, isObject } from '@noelware/utils';
-import { transformJSON, transformYaml } from './internal';
+import { transformJSON, transformYaml, assert } from './internal';
 import type { AbstractAuthStrategy } from './auth';
 import { OrganizationContainer } from './containers/organizations';
 import { ApiKeysContainer } from './containers/apikeys';
 import { UserContainer } from './containers/users';
 import { HTTPError } from './errors/HTTPError';
-import assert from 'assert';
 import defu from 'defu';
 
 export type HTTPMethod = 'get' | 'put' | 'head' | 'post' | 'patch' | 'delete';
@@ -42,7 +41,7 @@ export const Methods: readonly HTTPMethod[] = ['get', 'put', 'head', 'post', 'pa
 /**
  * Fetch implementation blue-print.
  */
-export type Fetch = (input: RequestInit | URL, init?: RequestInit) => Promise<Response>;
+export type Fetch = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 
 /**
  * FormData implementation blue-print
@@ -80,7 +79,7 @@ export interface ClientOptions {
      * To avoid any errors when requesting data, you will need to install the [form-data](https://npm.im/form-data)
      * Node.js package to send form data.
      */
-    FormData?: { new (...args: any[]): FormData };
+    FormData?: Ctor<FormData>;
 
     /**
      * Base URL to send requests to
@@ -158,7 +157,9 @@ export interface RequestOptions<R extends Route, Method extends HTTPMethod, Body
 const kClientOptions = {
     apiVersion: DEFAULT_API_VERSION,
     baseURL: DEFAULT_BASE_URL,
-    headers: {}
+    headers: {
+        'User-Agent': 'Noelware/charted-sdk-js (+https://github.com/charted-dev/js-sdk)'
+    }
 } satisfies ClientOptions;
 
 export class Client {
@@ -570,7 +571,7 @@ export class Client {
 
         if (url.match(/{([\w\.]+)}/g) && options !== undefined && hasOwnProperty(options, 'pathParameters')) {
             const params = options.pathParameters as Record<string, unknown>;
-            formedUrl = formedUrl.replaceAll(/([\w\.]+)}/g, (_, key) => {
+            formedUrl = formedUrl.replaceAll(/{([\w\.]+)}/g, (_, key) => {
                 if (hasOwnProperty(params, key)) {
                     return String(params[key]);
                 }
@@ -596,6 +597,6 @@ export class Client {
             }
         }
 
-        return formedUrl;
+        return formedUrl.replace(/\/+$/, '');
     }
 }

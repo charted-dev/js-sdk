@@ -5,8 +5,8 @@
         "removeComments": false,
         "types": ["node"],
         "baseUrl": ".",
-        "noEmit": true // tsup does this for us=
+        "noEmit": true
     },
     "exclude": ["node_modules"],
-    "include": ["**/*.ts"]
+    "include": ["**/*.ts", "vite.config.ts"]
 }

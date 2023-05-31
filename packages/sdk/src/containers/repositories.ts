@@ -28,7 +28,8 @@ export class RepositoryContainer {
     ) {}
 
     /**
-     * Retrives a list of all the repositories available
+     * Fetch all the available user or organization repositories
+     * @param options Request options object to override.
      */
     all(
         options?: RequestOptions<'/users/{idOrName}/repositories', 'get', unknown>
@@ -55,6 +56,12 @@ export class RepositoryContainer {
         );
     }
 
+    /**
+     * Returns a single repository from a user or organization.
+     * @param idOrName The snowflake or the name of the repository to fetch from
+     * @param options Request options
+     * @returns A single repository, if it was found.
+     */
     get(
         idOrName: NameOrSnowflake,
         options?: RequestOptions<'/users/{idOrName}/repositories/{repoIdOrName}', 'get', unknown>
@@ -86,6 +93,10 @@ export class RepositoryContainer {
         payload: payloads.repositories.CreateRepositoryPayload,
         options?: RequestOptions<'/users/{idOrName}/repositories', 'put', unknown>
     ): Promise<ApiResponse<responses.repositories.Create>> {
+        if (this.type === 'user' && this.owner !== '@me') {
+            throw new Error('You must use <client>.me.repositories.create() to create a repository on your account.');
+        }
+
         return new Promise((resolve, reject) =>
             this.client
                 .put(

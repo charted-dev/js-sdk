@@ -1862,110 +1862,6 @@ export interface paths {
             };
         };
     };
-    '/organizations/{idOrName}': {
-        /** @description Grabs an organization resource by its ID or name. */
-        get: {
-            parameters: {
-                path: {
-                    /** @description Snowflake ID or name to retrieve an organization */
-                    idOrName: string;
-                };
-            };
-            responses: {};
-        };
-        /** @description Patch an organization's metadata */
-        patch: {
-            parameters: {
-                path: {
-                    /** @description Snowflake or Name of the user to search for */
-                    idOrName: components['schemas']['NameOrSnowflake'];
-                };
-            };
-            responses: {
-                202: {
-                    content: {
-                        'application/json': components['schemas']['ApiResponseUnit'];
-                    };
-                };
-                /** @description If the authentication handler couldn't authorize successfully */
-                401: {
-                    content: {
-                        'application/json': components['schemas']['Err'];
-                    };
-                };
-                /** @description Whether if the `Authorization` header is not present or a REST controller requires the authentication type to be from a Session Token */
-                403: {
-                    content: {
-                        'application/json': components['schemas']['Err'];
-                    };
-                };
-                /** @description If a session couldn't be found based off the authentication details given, or if a user wasn't found (can happen if a user was deleted) */
-                404: {
-                    content: {
-                        'application/json': components['schemas']['Err'];
-                    };
-                };
-                /** @description Whether if the `Authorization` header is not in an acceptable format */
-                406: {
-                    content: {
-                        'application/json': components['schemas']['Err'];
-                    };
-                };
-            };
-        };
-    };
-    '/v1/organizations/{idOrName}': {
-        /** @description Grabs an organization resource by its ID or name. */
-        get: {
-            parameters: {
-                path: {
-                    /** @description Snowflake ID or name to retrieve an organization */
-                    idOrName: string;
-                };
-            };
-            responses: {};
-        };
-        /** @description Patch an organization's metadata */
-        patch: {
-            parameters: {
-                path: {
-                    /** @description Snowflake or Name of the user to search for */
-                    idOrName: components['schemas']['NameOrSnowflake'];
-                };
-            };
-            responses: {
-                202: {
-                    content: {
-                        'application/json': components['schemas']['ApiResponseUnit'];
-                    };
-                };
-                /** @description If the authentication handler couldn't authorize successfully */
-                401: {
-                    content: {
-                        'application/json': components['schemas']['Err'];
-                    };
-                };
-                /** @description Whether if the `Authorization` header is not present or a REST controller requires the authentication type to be from a Session Token */
-                403: {
-                    content: {
-                        'application/json': components['schemas']['Err'];
-                    };
-                };
-                /** @description If a session couldn't be found based off the authentication details given, or if a user wasn't found (can happen if a user was deleted) */
-                404: {
-                    content: {
-                        'application/json': components['schemas']['Err'];
-                    };
-                };
-                /** @description Whether if the `Authorization` header is not in an acceptable format */
-                406: {
-                    content: {
-                        'application/json': components['schemas']['Err'];
-                    };
-                };
-            };
-        };
-    };
     '/apikeys/{nameOrId}': {
         /** @description Returns a single API key resource owned by the current authenticated user */
         get: {
@@ -2197,6 +2093,110 @@ export interface paths {
                 404: {
                     content: {
                         'application/json': components['schemas']['ApiResponseUnit'];
+                    };
+                };
+                /** @description Whether if the `Authorization` header is not in an acceptable format */
+                406: {
+                    content: {
+                        'application/json': components['schemas']['Err'];
+                    };
+                };
+            };
+        };
+    };
+    '/organizations/{idOrName}': {
+        /** @description Grabs an organization resource by its ID or name. */
+        get: {
+            parameters: {
+                path: {
+                    /** @description Snowflake ID or name to retrieve an organization */
+                    idOrName: string;
+                };
+            };
+            responses: {};
+        };
+        /** @description Patch an organization's metadata */
+        patch: {
+            parameters: {
+                path: {
+                    /** @description Snowflake or Name of the user to search for */
+                    idOrName: components['schemas']['NameOrSnowflake'];
+                };
+            };
+            responses: {
+                202: {
+                    content: {
+                        'application/json': components['schemas']['ApiResponseUnit'];
+                    };
+                };
+                /** @description If the authentication handler couldn't authorize successfully */
+                401: {
+                    content: {
+                        'application/json': components['schemas']['Err'];
+                    };
+                };
+                /** @description Whether if the `Authorization` header is not present or a REST controller requires the authentication type to be from a Session Token */
+                403: {
+                    content: {
+                        'application/json': components['schemas']['Err'];
+                    };
+                };
+                /** @description If a session couldn't be found based off the authentication details given, or if a user wasn't found (can happen if a user was deleted) */
+                404: {
+                    content: {
+                        'application/json': components['schemas']['Err'];
+                    };
+                };
+                /** @description Whether if the `Authorization` header is not in an acceptable format */
+                406: {
+                    content: {
+                        'application/json': components['schemas']['Err'];
+                    };
+                };
+            };
+        };
+    };
+    '/v1/organizations/{idOrName}': {
+        /** @description Grabs an organization resource by its ID or name. */
+        get: {
+            parameters: {
+                path: {
+                    /** @description Snowflake ID or name to retrieve an organization */
+                    idOrName: string;
+                };
+            };
+            responses: {};
+        };
+        /** @description Patch an organization's metadata */
+        patch: {
+            parameters: {
+                path: {
+                    /** @description Snowflake or Name of the user to search for */
+                    idOrName: components['schemas']['NameOrSnowflake'];
+                };
+            };
+            responses: {
+                202: {
+                    content: {
+                        'application/json': components['schemas']['ApiResponseUnit'];
+                    };
+                };
+                /** @description If the authentication handler couldn't authorize successfully */
+                401: {
+                    content: {
+                        'application/json': components['schemas']['Err'];
+                    };
+                };
+                /** @description Whether if the `Authorization` header is not present or a REST controller requires the authentication type to be from a Session Token */
+                403: {
+                    content: {
+                        'application/json': components['schemas']['Err'];
+                    };
+                };
+                /** @description If a session couldn't be found based off the authentication details given, or if a user wasn't found (can happen if a user was deleted) */
+                404: {
+                    content: {
+                        'application/json': components['schemas']['Err'];
                     };
                 };
                 /** @description Whether if the `Authorization` header is not in an acceptable format */

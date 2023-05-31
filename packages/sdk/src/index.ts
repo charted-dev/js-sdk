@@ -20,6 +20,7 @@ import { Client, type ClientOptions } from './client';
 export * as constants from './constants';
 export type * from './client';
 export * from './errors';
+export * from './auth';
 
 /**
  * Creates a new {@link Client} instance.

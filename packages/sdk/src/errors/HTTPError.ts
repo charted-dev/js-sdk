@@ -15,21 +15,33 @@
  * limitations under the License.
  */
 
+import { hasOwnProperty, isObject } from '@noelware/utils';
+import { STATUS_CODES } from 'http';
 import { ApiError } from '@ncharts/types';
-import { isObject } from '@noelware/utils';
+
+const isFatalError = (value: unknown) => isObject<Record<string, unknown>>(value) && hasOwnProperty(value, 'class');
 
 /**
  * {@link Error} that represents an HTTP error.
  */
 export class HTTPError extends Error {
     constructor(public readonly statusCode: number, errors: ApiError<unknown>[] = []) {
-        super(`Received status code [${statusCode}] with errors\n${HTTPError._formatErrors(errors)}`.trim());
+        super(
+            `Received status code ${statusCode} (${
+                STATUS_CODES[statusCode] || 'Unknown'
+            }) with errors\n${HTTPError._formatErrors(errors)}`.trim()
+        );
     }
 
     private static _formatErrors(errors: ApiError<unknown>[]) {
         let buf = '';
         for (let i = 0; i < errors.length; i++) {
             const error = errors[i];
+            if (isFatalError(error)) {
+                const details = error.detail as Record<string, unknown>;
+                console.log(details);
+            }
+
             buf += `[${error.code}]: ${error.message}${
                 error.detail !== undefined
                     ? `\n${
