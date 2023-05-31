@@ -657,3 +657,4 @@ FodyWeavers.xsd
 !.yarn/releases
 !packages/**/*
 packages/**/dist
+packages/**/node_modules
