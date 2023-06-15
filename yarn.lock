@@ -455,7 +455,7 @@ __metadata:
     "@noelware/utils": 2.3.0
     "@types/node": 20.2.5
     defu: 6.1.2
-    testcontainers: 9.9.0
+    testcontainers: 9.9.1
     vitest: 0.32.0
   languageName: unknown
   linkType: soft
@@ -569,13 +569,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/dockerode@npm:^3.3.16":
-  version: 3.3.18
-  resolution: "@types/dockerode@npm:3.3.18"
+"@types/dockerode@npm:^3.3.19":
+  version: 3.3.19
+  resolution: "@types/dockerode@npm:3.3.19"
   dependencies:
     "@types/docker-modem": "*"
     "@types/node": "*"
-  checksum: 7ad51a0d6db9343637760a86e3d2ffd2c706db545630806ebfda428f5e8f5e458d4c6cb46657832b0638df7caee7c6922fcfbdc9271f88084e236adddaba7fa2
+  checksum: 96d6cd3811a778d12382432413c3b0a935912c175ca939c77aaa0db2630c205daf14d5fa52e458a6fd44355c444f4fa1bd821e0364d4d0b6388061b5fe889431
   languageName: node
   linkType: hard
 
@@ -3704,7 +3704,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.9":
+"node-fetch@npm:^2.6.11":
   version: 2.6.11
   resolution: "node-fetch@npm:2.6.11"
   dependencies:
@@ -4902,13 +4902,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"testcontainers@npm:9.9.0":
-  version: 9.9.0
-  resolution: "testcontainers@npm:9.9.0"
+"testcontainers@npm:9.9.1":
+  version: 9.9.1
+  resolution: "testcontainers@npm:9.9.1"
   dependencies:
     "@balena/dockerignore": ^1.0.2
     "@types/archiver": ^5.3.2
-    "@types/dockerode": ^3.3.16
+    "@types/dockerode": ^3.3.19
     archiver: ^5.3.1
     async-lock: ^1.4.0
     byline: ^5.0.0
@@ -4916,12 +4916,12 @@ __metadata:
     docker-compose: ^0.24.1
     dockerode: ^3.3.5
     get-port: ^5.1.1
-    node-fetch: ^2.6.9
+    node-fetch: ^2.6.11
     properties-reader: ^2.2.0
     ssh-remote-port-forward: ^1.0.4
     tar-fs: ^2.1.1
     tmp: ^0.2.1
-  checksum: 08b919e08b5bdb7fabc2404759c4090782cc750490e209dd2faca23a1f7c0a6e8fd5418347a335c32c553a4574b9b8febaee216e481deac2b2427cf1f66c8cfb
+  checksum: 3285fa7ddd1868d39a4ea63e156d57685aca030bca68940cf6cacf6e8df20c56fe7b796e661f567200b24415591b40ffd50adc3d7926af8d27a39101ba85777c
   languageName: node
   linkType: hard
 
