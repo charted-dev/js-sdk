@@ -591,17 +591,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jsdevtools/npm-publish@npm:2.2.0":
-  version: 2.2.0
-  resolution: "@jsdevtools/npm-publish@npm:2.2.0"
+"@jsdevtools/npm-publish@npm:2.2.1":
+  version: 2.2.1
+  resolution: "@jsdevtools/npm-publish@npm:2.2.1"
   dependencies:
-    "@types/semver": ^7.3.13
+    "@types/semver": ^7.5.0
     command-line-args: ^5.1.1
-    semver: ^7.5.0
-    tar: ^6.1.13
+    semver: ^7.5.3
+    tar: ^6.1.15
   bin:
     npm-publish: bin/npm-publish.js
-  checksum: 71a52c0bd9771be2373a8f9638ac0f038c8bac013fa301a8657a9ca2d87112f7a455b06beeea85583a5e51da8331fde4ca239bce207f1410fd9bfe7c32c0bcc7
+  checksum: 2181d6187d7d94be3c71297be91141f749cf6d89c197e155e1cf145ec927919026f38f6075400911b00e4f742f3544a2b872098e343f2798e3ac073c869881b3
   languageName: node
   linkType: hard
 
@@ -612,7 +612,7 @@ __metadata:
     "@actions/core": 1.10.0
     "@augu/eslint-config": 4.0.1
     "@augu/tsconfig": 1.1.1
-    "@jsdevtools/npm-publish": 2.2.0
+    "@jsdevtools/npm-publish": 2.2.1
     "@noelware/utils": 2.3.0
     "@types/eslint": 8.44.0
     "@types/node": 20.4.1
@@ -834,7 +834,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7.3.12, @types/semver@npm:^7.3.13":
+"@types/semver@npm:^7.3.12, @types/semver@npm:^7.5.0":
   version: 7.5.0
   resolution: "@types/semver@npm:7.5.0"
   checksum: 0a64b9b9c7424d9a467658b18dd70d1d781c2d6f033096a6e05762d20ebbad23c1b69b0083b0484722aabf35640b78ccc3de26368bcae1129c87e9df028a22e2
@@ -4765,6 +4765,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"semver@npm:^7.5.3":
+  version: 7.5.4
+  resolution: "semver@npm:7.5.4"
+  dependencies:
+    lru-cache: ^6.0.0
+  bin:
+    semver: bin/semver.js
+  checksum: 12d8ad952fa353b0995bf180cdac205a4068b759a140e5d3c608317098b3575ac2f1e09182206bf2eb26120e1c0ed8fb92c48c592f6099680de56bb071423ca3
+  languageName: node
+  linkType: hard
+
 "set-blocking@npm:^2.0.0":
   version: 2.0.0
   resolution: "set-blocking@npm:2.0.0"
@@ -5187,7 +5198,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar@npm:^6.1.11, tar@npm:^6.1.13, tar@npm:^6.1.2":
+"tar@npm:^6.1.11, tar@npm:^6.1.15, tar@npm:^6.1.2":
   version: 6.1.15
   resolution: "tar@npm:6.1.15"
   dependencies:
