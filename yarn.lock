@@ -642,7 +642,7 @@ __metadata:
     "@noelware/utils": 2.3.0
     "@types/node": 20.4.2
     defu: 6.1.2
-    testcontainers: 9.10.0
+    testcontainers: 9.10.1
     vitest: 0.33.0
   languageName: unknown
   linkType: soft
@@ -3982,9 +3982,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.11":
-  version: 2.6.11
-  resolution: "node-fetch@npm:2.6.11"
+"node-fetch@npm:^2.6.12":
+  version: 2.6.12
+  resolution: "node-fetch@npm:2.6.12"
   dependencies:
     whatwg-url: ^5.0.0
   peerDependencies:
@@ -3992,7 +3992,7 @@ __metadata:
   peerDependenciesMeta:
     encoding:
       optional: true
-  checksum: 249d0666a9497553384d46b5ab296ba223521ac88fed4d8a17d6ee6c2efb0fc890f3e8091cafe7f9fba8151a5b8d925db2671543b3409a56c3cd522b468b47b3
+  checksum: 3bc1655203d47ee8e313c0d96664b9673a3d4dd8002740318e9d27d14ef306693a4b2ef8d6525775056fd912a19e23f3ac0d7111ad8925877b7567b29a625592
   languageName: node
   linkType: hard
 
@@ -5212,9 +5212,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"testcontainers@npm:9.10.0":
-  version: 9.10.0
-  resolution: "testcontainers@npm:9.10.0"
+"testcontainers@npm:9.10.1":
+  version: 9.10.1
+  resolution: "testcontainers@npm:9.10.1"
   dependencies:
     "@balena/dockerignore": ^1.0.2
     "@types/archiver": ^5.3.2
@@ -5226,12 +5226,12 @@ __metadata:
     docker-compose: ^0.24.1
     dockerode: ^3.3.5
     get-port: ^5.1.1
-    node-fetch: ^2.6.11
+    node-fetch: ^2.6.12
     properties-reader: ^2.2.0
     ssh-remote-port-forward: ^1.0.4
     tar-fs: ^2.1.1
     tmp: ^0.2.1
-  checksum: e66028b36bab03413ee8893e7a28f9a8cba6a0a509658b01347aa7d0d98974966ce78cd82ebb79e96e6813d9b8de2ca3ce07b1f1d17d74c06ee08b1990443369
+  checksum: e9da446dedcdda381993335ece8fcc690ff252c213637419797a7f4756de0125db9d8865180796cc6c4d041ee108f9513a10d93c70f67ab2a0be93951ed6e418
   languageName: node
   linkType: hard
 
