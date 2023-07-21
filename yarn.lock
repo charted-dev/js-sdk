@@ -624,7 +624,7 @@ __metadata:
     eslint: 8.45.0
     eslint-config-prettier: 8.8.0
     log-symbols: 5.1.0
-    openapi-typescript: 6.3.5
+    openapi-typescript: 6.3.7
     prettier: 3.0.0
     rimraf: 5.0.1
     signale: 1.4.0
@@ -4154,9 +4154,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openapi-typescript@npm:6.3.5":
-  version: 6.3.5
-  resolution: "openapi-typescript@npm:6.3.5"
+"openapi-typescript@npm:6.3.7":
+  version: 6.3.7
+  resolution: "openapi-typescript@npm:6.3.7"
   dependencies:
     ansi-colors: ^4.1.3
     fast-glob: ^3.3.0
@@ -4166,7 +4166,7 @@ __metadata:
     yargs-parser: ^21.1.1
   bin:
     openapi-typescript: bin/cli.js
-  checksum: df3c23e3b122ca44bff5052b6f3a16c0171b5345a01e719c7b983e7cc202cca83d5238e6806414141966060bc10aa54d340ac98a0d167bf9c18fb43dfbd18159
+  checksum: c203ad44d7245c46a1aefbf73ce042f363a7fc23309d0666b65d803c817ebfbb893763c9add5c8a6dc803c99ef00f1aad1ad1cdebbe2a4cfb80e54d681604889
   languageName: node
   linkType: hard
 
