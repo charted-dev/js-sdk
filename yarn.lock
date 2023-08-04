@@ -649,7 +649,7 @@ __metadata:
     "@noelware/utils": 2.4.0
     "@types/node": 20.4.7
     defu: 6.1.2
-    testcontainers: 10.0.1
+    testcontainers: 10.0.2
     vitest: 0.34.1
   languageName: unknown
   linkType: soft
@@ -5241,9 +5241,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"testcontainers@npm:10.0.1":
-  version: 10.0.1
-  resolution: "testcontainers@npm:10.0.1"
+"testcontainers@npm:10.0.2":
+  version: 10.0.2
+  resolution: "testcontainers@npm:10.0.2"
   dependencies:
     "@balena/dockerignore": ^1.0.2
     archiver: ^5.3.1
@@ -5259,7 +5259,7 @@ __metadata:
     ssh-remote-port-forward: ^1.0.4
     tar-fs: ^3.0.4
     tmp: ^0.2.1
-  checksum: c8d923fa250070f7d000e813722cabe69fec7e0a89324829be07a45a4f732a5b5bbf87afc7102b219e154bc49947ca7e89e2ddb0a00654cc5722dbac1db5573a
+  checksum: 1b942ec34afc6990a716c834c42baa5563456d43b29a8815b8510df7818cb82b6a5d34867b58393f6821650d764a8b6791b54d337c17776a15f9f0243d1a47a2
   languageName: node
   linkType: hard
 
