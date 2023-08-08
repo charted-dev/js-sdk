@@ -29,7 +29,7 @@
     },
     "devDependencies": {
         "@types/node": "20.4.8",
-        "testcontainers": "10.0.2",
+        "testcontainers": "10.1.0",
         "vitest": "0.34.1"
     }
 }
