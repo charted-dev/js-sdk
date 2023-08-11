@@ -28,7 +28,7 @@
         "defu": "6.1.2"
     },
     "devDependencies": {
-        "@types/node": "20.4.9",
+        "@types/node": "20.4.10",
         "testcontainers": "10.2.0",
         "vitest": "0.34.1"
     }
