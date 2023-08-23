@@ -3,7 +3,7 @@
     "description": "🐻‍❄️📦 Root project for @ncharts/sdk",
     "private": true,
     "version": "0.0.0-dev.0",
-    "packageManager": "yarn@3.6.2",
+    "packageManager": "yarn@3.6.3",
     "workspaces": [
         "packages/sdk",
         "packages/types"
