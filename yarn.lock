@@ -752,17 +752,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jsdevtools/npm-publish@npm:2.2.1":
-  version: 2.2.1
-  resolution: "@jsdevtools/npm-publish@npm:2.2.1"
+"@jsdevtools/npm-publish@npm:2.2.2":
+  version: 2.2.2
+  resolution: "@jsdevtools/npm-publish@npm:2.2.2"
   dependencies:
-    "@types/semver": ^7.5.0
-    command-line-args: ^5.1.1
-    semver: ^7.5.3
-    tar: ^6.1.15
+    "@types/semver": ^7.5.1
+    command-line-args: ^5.2.1
+    semver: 7.5.4
+    tar: 6.2.0
   bin:
     npm-publish: bin/npm-publish.js
-  checksum: 2181d6187d7d94be3c71297be91141f749cf6d89c197e155e1cf145ec927919026f38f6075400911b00e4f742f3544a2b872098e343f2798e3ac073c869881b3
+  checksum: 78e08d47891a6d789069c534e23fed07f9f03a4a9d135612cfd55e54f57eea3f2480cbba6e7988a7160789748b5cb54b8c37f36306794c11268d7d3056074f1d
   languageName: node
   linkType: hard
 
@@ -773,7 +773,7 @@ __metadata:
     "@actions/core": 1.10.1
     "@augu/eslint-config": 4.0.1
     "@augu/tsconfig": 1.1.1
-    "@jsdevtools/npm-publish": 2.2.1
+    "@jsdevtools/npm-publish": 2.2.2
     "@noelware/utils": 2.4.0
     "@types/eslint": 8.44.2
     "@types/node": 20.6.0
@@ -954,6 +954,13 @@ __metadata:
   version: 7.5.0
   resolution: "@types/semver@npm:7.5.0"
   checksum: 0a64b9b9c7424d9a467658b18dd70d1d781c2d6f033096a6e05762d20ebbad23c1b69b0083b0484722aabf35640b78ccc3de26368bcae1129c87e9df028a22e2
+  languageName: node
+  linkType: hard
+
+"@types/semver@npm:^7.5.1":
+  version: 7.5.1
+  resolution: "@types/semver@npm:7.5.1"
+  checksum: 2fffe938c7ac168711f245a16e1856a3578d77161ca17e29a05c3e02c7be3e9c5beefa29a3350f6c1bd982fb70aa28cc52e4845eb7d36246bcdc0377170d584d
   languageName: node
   linkType: hard
 
@@ -1919,7 +1926,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"command-line-args@npm:^5.1.1":
+"command-line-args@npm:^5.2.1":
   version: 5.2.1
   resolution: "command-line-args@npm:5.2.1"
   dependencies:
@@ -5009,6 +5016,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"semver@npm:7.5.4, semver@npm:^7.5.4":
+  version: 7.5.4
+  resolution: "semver@npm:7.5.4"
+  dependencies:
+    lru-cache: ^6.0.0
+  bin:
+    semver: bin/semver.js
+  checksum: 12d8ad952fa353b0995bf180cdac205a4068b759a140e5d3c608317098b3575ac2f1e09182206bf2eb26120e1c0ed8fb92c48c592f6099680de56bb071423ca3
+  languageName: node
+  linkType: hard
+
 "semver@npm:^6.3.0":
   version: 6.3.0
   resolution: "semver@npm:6.3.0"
@@ -5026,17 +5044,6 @@ __metadata:
   bin:
     semver: bin/semver.js
   checksum: d16dbedad53c65b086f79524b9ef766bf38670b2395bdad5c957f824dcc566b624988013564f4812bcace3f9d405355c3635e2007396a39d1bffc71cfec4a2fc
-  languageName: node
-  linkType: hard
-
-"semver@npm:^7.5.3, semver@npm:^7.5.4":
-  version: 7.5.4
-  resolution: "semver@npm:7.5.4"
-  dependencies:
-    lru-cache: ^6.0.0
-  bin:
-    semver: bin/semver.js
-  checksum: 12d8ad952fa353b0995bf180cdac205a4068b759a140e5d3c608317098b3575ac2f1e09182206bf2eb26120e1c0ed8fb92c48c592f6099680de56bb071423ca3
   languageName: node
   linkType: hard
 
@@ -5482,7 +5489,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar@npm:^6.1.11, tar@npm:^6.1.15, tar@npm:^6.1.2":
+"tar@npm:6.2.0":
+  version: 6.2.0
+  resolution: "tar@npm:6.2.0"
+  dependencies:
+    chownr: ^2.0.0
+    fs-minipass: ^2.0.0
+    minipass: ^5.0.0
+    minizlib: ^2.1.1
+    mkdirp: ^1.0.3
+    yallist: ^4.0.0
+  checksum: db4d9fe74a2082c3a5016630092c54c8375ff3b280186938cfd104f2e089c4fd9bad58688ef6be9cf186a889671bf355c7cda38f09bbf60604b281715ca57f5c
+  languageName: node
+  linkType: hard
+
+"tar@npm:^6.1.11, tar@npm:^6.1.2":
   version: 6.1.15
   resolution: "tar@npm:6.1.15"
   dependencies:
