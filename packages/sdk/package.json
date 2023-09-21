@@ -30,6 +30,6 @@
     "devDependencies": {
         "@types/node": "20.6.3",
         "testcontainers": "10.2.1",
-        "vitest": "0.34.4"
+        "vitest": "0.34.5"
     }
 }
