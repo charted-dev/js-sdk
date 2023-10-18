@@ -1,3 +1,6 @@
+# WARNING
+[`@ncharts/types`](https://npm.im/@ncharts/types) has been merged into the [main repository](https://github.com/charted-dev/charted) under the `types/js` folder. [`@ncharts/sdk`](https://npm.im/@ncharts/sdk) is deprecated and shouldn't be used.
+
 # 🐻‍❄️📦 @ncharts/sdk
 
 > _SDK bindings and typings for [charted-server](https://charts.noelware.org/docs/server/current)_
