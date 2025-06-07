@@ -774,7 +774,7 @@ __metadata:
     "@augu/eslint-config": 4.0.1
     "@augu/tsconfig": 1.1.1
     "@jsdevtools/npm-publish": 2.2.2
-    "@noelware/utils": 2.4.0
+    "@noelware/utils": 2.5.1
     "@types/eslint": 8.44.5
     "@types/node": 20.8.6
     "@types/prettier": 2.7.3
@@ -800,7 +800,7 @@ __metadata:
   resolution: "@ncharts/sdk@workspace:packages/sdk"
   dependencies:
     "@ncharts/types": "workspace:^"
-    "@noelware/utils": 2.4.0
+    "@noelware/utils": 2.5.1
     "@types/node": 20.8.6
     defu: 6.1.2
     testcontainers: 10.2.1
@@ -841,10 +841,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noelware/utils@npm:2.4.0":
-  version: 2.4.0
-  resolution: "@noelware/utils@npm:2.4.0"
-  checksum: 09a488aa1cd5802c8c9d3c7a7e280e2e1a64b0b5c75ecb9fd4999ea13ef04fc77d489cbf8fd74530460d8d4acefd5affe7faa7fb03f95355cf4b68e337ebbe0f
+"@noelware/utils@npm:2.5.1":
+  version: 2.5.1
+  resolution: "@noelware/utils@npm:2.5.1"
+  checksum: afba0cf70f85f2788e3a38ea3b9ade8faa5a4944de3e089a3a13d90c8faeab16218966c56e55d1256343d68c258dbb3c7f78a4e82d8155987d1a94469ff1342b
   languageName: node
   linkType: hard
 
