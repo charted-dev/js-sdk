@@ -802,7 +802,7 @@ __metadata:
     "@ncharts/types": "workspace:^"
     "@noelware/utils": 2.4.0
     "@types/node": 20.8.6
-    defu: 6.1.2
+    defu: 6.1.6
     testcontainers: 10.2.1
     vitest: 0.34.6
   languageName: unknown
@@ -2070,10 +2070,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"defu@npm:6.1.2":
-  version: 6.1.2
-  resolution: "defu@npm:6.1.2"
-  checksum: 2ec0ff8414d5a1ab2b8c7e9a79bbad6d97d23ea7ebf5dcf80c3c7ffd9715c30f84a3cc47b917379ea756b3db0dc4701ce6400e493a1ae1688dffcd0f884233b2
+"defu@npm:6.1.6":
+  version: 6.1.6
+  resolution: "defu@npm:6.1.6"
+  checksum: 639367cc678f08a919c46b86368e981db005745df91f726ba69b035f61d5a3ce150f716f71527821b8252a518586c6bda09a816b68efb0df842b2ebdf3e45e82
   languageName: node
   linkType: hard
 
